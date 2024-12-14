@@ -4,6 +4,7 @@ import ScreenWrapper from '@/components/ScreenWrapper';
 import { hp, wp } from '@/helpers/common';
 import MenuButton from '../components/MenuButton';
 import { theme } from '../constants/theme';
+import MenuModal from '../components/MenuModal';
 
 const TabButton = ({ value, selectedValue, onPress, label }) => {
   const isChecked = (value === selectedValue);
@@ -25,12 +26,19 @@ const TabButton = ({ value, selectedValue, onPress, label }) => {
 
 const SearchScreen = () => {
   const [selectedTab, setSelectedTab] = useState("Gallery");
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   return (
     <ScreenWrapper bg="white">
       <StatusBar style="dark" />
       <View style={styles.container}>
-        <MenuButton size={30} />
+        <MenuButton size={30} onPress={() => setIsModalVisible(true)} />
+        <MenuModal
+          visible={isModalVisible}
+          onClose={() => setIsModalVisible(false)}
+          title="Menu"
+        />
+
         <View style={styles.tabSection}>
           <View style={styles.tabButtons}>
             {['Camera', 'Gallery'].map((item) => (
