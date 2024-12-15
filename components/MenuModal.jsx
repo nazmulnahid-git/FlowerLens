@@ -6,12 +6,14 @@ import {
   Pressable,
   Animated,
   StyleSheet,
+  ScrollView,
 } from 'react-native';
 import { hp, wp } from '../helpers/common';
 import { theme } from '../constants/theme';
-import { IconCancel, IconEdit, IconLogout } from '../assets/icons/Icons';
+import { IconCancel } from '../assets/icons/Icons';
+import Input from './SearchInput';
 
-const MenuModal = ({ visible, onClose, title }) => {
+const MenuModal = ({ visible, onClose }) => {
   const slideAnim = useRef(new Animated.Value(-wp(80))).current;
   const [openSubMenu, setOpenSubMenu] = useState(false);
 
@@ -33,47 +35,56 @@ const MenuModal = ({ visible, onClose, title }) => {
 
   return (
     <Modal visible={visible} transparent animationType="none">
+
       <View style={styles.modalOverlay}>
-        <Pressable style={styles.overlay} activeOpacity={1} onPress={closeModal} />
+        {/* Dismiss Modal on Outside Press */}
+        <Pressable
+          style={styles.overlay}
+          activeOpacity={1}
+          onPress={closeModal}
+          accessibilityLabel="Close"
+        />
+
+        {/* Modal Content */}
         <Animated.View
           style={[styles.modalContainer, { transform: [{ translateX: slideAnim }] }]}
         >
+          {/* Header Section */}
           <View style={styles.modalHeader}>
-            <Pressable onPress={closeModal}>
-              <IconCancel width={wp(8)} height={wp(8)} strokeWidth={1.2} color={theme.colors.danger} />
+            <Text style={styles.modalTitle}>History</Text>
+            <Pressable onPress={closeModal} accessibilityLabel="Close">
+              <IconCancel
+                width={wp(8)}
+                height={wp(8)}
+                strokeWidth={1.2}
+                color={theme.colors.danger}
+              />
             </Pressable>
-
-            <View style={styles.userInfo}>
-              <Pressable onPress={toggleSubMenu}>
-                <Text style={styles.userName}>Md Nazmul Nahid</Text>
-              </Pressable>
-              {openSubMenu && (
-                <Animated.View style={styles.subMenu}>
-                  <View style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-
-                  }}>
-                    <IconEdit width={wp(6)} height={wp(6)} strokeWidth={1.2} color={theme.colors.primary} />
-                    <Text style={styles.subMenuItem}>Edit Profile</Text>
-                  </View>
-                  <View style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-
-                  }}>
-                    <IconLogout width={wp(6)} height={wp(6)} strokeWidth={1.2} color={theme.colors.primary} />
-                    <Text style={styles.subMenuItem}>Sign Out</Text>
-                  </View>
-                </Animated.View>
-              )}
-            </View>
           </View>
 
-          <View style={styles.modalContent}>
-            <Text>Additional content goes here...</Text>
+          <View style={styles.searchField}>
+            <Input />
+
+          </View>
+
+          {/* Main Content */}
+          <ScrollView style={styles.modalContent}
+          >
+            <Text style={styles.sectionText}>Additional content goes here...</Text>
+            <Text style={styles.sectionText}>Additional content goes here...</Text>
+            <Text style={styles.sectionText}>Additional content goes here...</Text>
+            <Text style={styles.sectionText}>Additional content goes here...</Text>
+            <Text style={styles.sectionText}>Additional content goes here...</Text>
+            <Text style={styles.sectionText}>Additional content goes here...</Text>
+
+          </ScrollView>
+
+          <View style={styles.modalFooter}>
+            <Pressable onPress={() => { }} accessibilityLabel="Close">
+
+              <Text>Md Nazmul Nahid</Text>
+            </Pressable>
+
           </View>
         </Animated.View>
       </View>
@@ -102,8 +113,8 @@ const styles = StyleSheet.create({
     paddingVertical: hp(2),
     paddingHorizontal: wp(4),
     elevation: 10,
-    borderTopLeftRadius: 15,
-    borderBottomLeftRadius: 15,
+    borderTopRightRadius: 20,
+    borderBottomRightRadius: 20,
   },
   modalHeader: {
     flexDirection: 'row',
@@ -112,41 +123,17 @@ const styles = StyleSheet.create({
     marginBottom: hp(1.5),
   },
   modalTitle: {
-    fontSize: wp(5),
+    fontSize: wp(7),
     fontWeight: theme.fonts.bold,
     color: theme.colors.primary,
-  },
-  closeButton: {
-    fontSize: wp(4.5),
-    color: '#ff5a5f',
-  },
-  userInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  userName: {
-    fontSize: wp(4),
-    fontWeight: theme.fonts.bold,
-    color: theme.colors.primary,
-  },
-  subMenu: {
-    marginTop: hp(1),
-    backgroundColor: '#dfe2e8',
-    borderRadius: 5,
-    padding: wp(3),
-    position: 'absolute',
-    top: hp(2),
-    width: wp(36),
-
-  },
-  subMenuItem: {
-    fontSize: wp(4),
-    color: theme.colors.dark,
-    paddingVertical: hp(1),
   },
   modalContent: {
     flex: 1,
-    justifyContent: 'center',
-    gap: hp(1),
+    paddingTop: hp(1),
+  },
+  sectionText: {
+    fontSize: wp(4),
+    marginBottom: hp(1),
+    color: theme.colors.textPrimary,
   },
 });
