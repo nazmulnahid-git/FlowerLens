@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { Pressable, StyleSheet, TextInput, View, Keyboard } from 'react-native';
 import { hp, wp } from '@/helpers/common';
 import { theme } from '../constants/theme';
 import { IconBack, IconSearch } from '../assets/icons/Icons';
@@ -16,9 +16,15 @@ const Input = ({
   ...props
 }) => {
   const prefixIcon = icon ? isFocused ?
-    <Pressable onPress={() => setIsFocused(false)}>
+    <Pressable onPress={() => {
+      setIsFocused(false);
+      Keyboard.dismiss();
+    }}>
       <IconBack width={wp(7)} height={hp(7)} color={theme.colors.gray} />
-    </Pressable> : <IconSearch width={wp(7)} height={hp(7)} color={theme.colors.gray} /> : null;
+    </Pressable >
+    : <IconSearch width={wp(7)} height={hp(7)} color={theme.colors.gray} />
+    : null;
+
   return (
     <View style={[styles.container, style]}>
       {prefixIcon}
@@ -28,6 +34,7 @@ const Input = ({
         placeholderTextColor={placeholderTextColor}
         ref={inputRef}
         onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
         {...props}
       />
     </View>
