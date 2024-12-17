@@ -36,7 +36,6 @@ const SearchScreen = () => {
         <MenuModal
           visible={isModalVisible}
           onClose={() => setIsModalVisible(false)}
-          title="Menu"
         />
 
         <View style={styles.tabSection}>

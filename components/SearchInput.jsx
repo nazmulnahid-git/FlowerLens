@@ -1,8 +1,8 @@
 import React from 'react';
-import { StyleSheet, TextInput, View } from 'react-native';
+import { Pressable, StyleSheet, TextInput, View } from 'react-native';
 import { hp, wp } from '@/helpers/common';
 import { theme } from '../constants/theme';
-import { IconSearch } from '../assets/icons/Icons';
+import { IconBack, IconSearch } from '../assets/icons/Icons';
 
 const Input = ({
   placeholder = 'Search',
@@ -11,22 +11,23 @@ const Input = ({
   inputRef,
   style,
   iconProps,
+  isFocused,
+  setIsFocused,
   ...props
 }) => {
+  const prefixIcon = icon ? isFocused ?
+    <Pressable onPress={() => setIsFocused(false)}>
+      <IconBack width={wp(7)} height={hp(7)} color={theme.colors.gray} />
+    </Pressable> : <IconSearch width={wp(7)} height={hp(7)} color={theme.colors.gray} /> : null;
   return (
     <View style={[styles.container, style]}>
-      {icon && (
-        <IconSearch
-          width={wp(7)}
-          height={hp(7)}
-          color={theme.colors.gray}
-        />
-      )}
+      {prefixIcon}
       <TextInput
         style={[styles.textInput, { marginLeft: icon ? wp(2) : 0 }]}
         placeholder={placeholder}
         placeholderTextColor={placeholderTextColor}
         ref={inputRef}
+        onFocus={() => setIsFocused(true)}
         {...props}
       />
     </View>

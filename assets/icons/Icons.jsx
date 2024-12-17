@@ -219,3 +219,36 @@ export const IconSearch = ({
     />
   </Svg>
 );
+
+export const IconBack = ({
+  width,
+  height,
+  color,
+  strokeWidth,
+  ...props
+}) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    width={width || defaultProps.width}
+    height={height || defaultProps.height}
+    color={color || defaultProps.color}
+    fill="none"
+    {...props}
+  >
+    <Path d="M3.99982 11.9998L19.9998 11.9998"
+      stroke={color || defaultProps.color}
+      strokeWidth={strokeWidth || defaultProps.strokeWidth}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <Path d="M8.99963 17C8.99963 17 3.99968 13.3176 3.99966 12C3.99965 10.6824 8.99966 7 8.99966 7"
+      stroke={color || defaultProps.color}
+      strokeWidth={strokeWidth || defaultProps.strokeWidth}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </Svg>
+);
+
+
