@@ -34,7 +34,9 @@ const MenuModal = ({ visible, onClose }) => {
   }
 
   return (
-    <Modal visible={visible} transparent animationType="none">
+    <Modal visible={visible} transparent animationType="none"
+      onRequestClose={handleClose}
+    >
 
       <View style={styles.modalOverlay}>
         {/* Dismiss Modal on Outside Press */}
