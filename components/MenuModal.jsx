@@ -22,7 +22,7 @@ const MenuModal = ({ visible, onClose }) => {
   useEffect(() => {
     Animated.timing(slideAnim, {
       toValue: visible ? 0 : -wp(80),
-      duration: 500,
+      duration: 400,
       easing: Easing.inOut(Easing.ease), // Add easing for smoother effect
       useNativeDriver: true,
     }).start();
@@ -52,30 +52,32 @@ const MenuModal = ({ visible, onClose }) => {
           style={[
             styles.modalContainer,
             {
-              width: isFocused ? '100%' : wp(80), // Conditional width based on focus
-              borderTopRightRadius: isFocused ? 0 : 20,
-              borderBottomRightRadius: isFocused ? 0 : 20,
+              width: isFocused ? '100%' : wp(80),
               transform: [{ translateX: slideAnim }],
             },
           ]}
         >
           {/* Header Section */}
-          <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>History</Text>
-            <Pressable onPress={handleClose} accessibilityLabel="Close">
-              <IconCancel
-                width={wp(8)}
-                height={wp(8)}
-                strokeWidth={1.2}
-                color={theme.colors.danger}
-              />
-            </Pressable>
+          <View style={
+            [styles.modalHeader, isFocused && styles.modalHeaderFocused]
+          }>
+            {
+              !isFocused && <View style={styles.modalHeaderInner}>
+                <Text style={styles.modalTitle}>History</Text>
+                <Pressable onPress={handleClose} accessibilityLabel="Close">
+                  <IconCancel
+                    width={wp(8)}
+                    height={wp(8)}
+                    strokeWidth={1.2}
+                    color={theme.colors.danger}
+                  />
+                </Pressable>
+              </View>
+            }
+            <Input isFocused={isFocused} setIsFocused={setIsFocused} style={{ backgroundColor: 'white' }} />
           </View>
 
-          <View style={styles.searchField}>
-            <Input isFocused={isFocused} setIsFocused={setIsFocused} />
 
-          </View>
 
           {/* Main Content */}
           <ScrollView style={styles.modalContent}
@@ -117,20 +119,33 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   modalContainer: {
-    // width: isFocused ? '100%' : wp(80),
     height: '100%',
     backgroundColor: '#fff',
-    paddingVertical: hp(2),
-    paddingHorizontal: wp(4),
     elevation: 10,
-    // borderTopRightRadius: isFocused ? 0 : 20,
-    // borderBottomRightRadius: isFocused ? 0 : 20,
   },
   modalHeader: {
+    padding: '7',
+    paddingBottom: '10',
+    backgroundColor: theme.colors.primaryLight,
+    borderTopLeftRadius: 0,
+    borderTopRightRadius: 0,
+    borderBottomLeftRadius: theme.radius.lg,
+    borderBottomRightRadius: theme.radius.lg,
+
+  },
+  modalHeaderFocused: {
+    backgroundColor: '#cbd0e7',
+    paddingTop: '10', borderTopLeftRadius: 0,
+    borderTopRightRadius: 0,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
+  },
+  modalHeaderInner: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: hp(1.5),
+    paddingVertical: '5',
+    paddingHorizontal: '10',
   },
   modalTitle: {
     fontSize: wp(7),
