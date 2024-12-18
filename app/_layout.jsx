@@ -1,7 +1,6 @@
 import React from 'react'
 import { AuthProvider } from '../contexts/AuthContext'
 import { Stack } from 'expo-router'
-import Home from './home'
 
 const _layout = () => {
   return (
@@ -13,7 +12,6 @@ const _layout = () => {
 
 const MainLayout = () => {
   return (
-    // <Home />
     <Stack
       screenOptions={{
         headerShown: false,

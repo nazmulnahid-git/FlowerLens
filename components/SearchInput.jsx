@@ -34,7 +34,7 @@ const Input = ({
         placeholderTextColor={placeholderTextColor}
         ref={inputRef}
         onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
+        // onBlur={() => setIsFocused(false)}
         {...props}
       />
     </View>

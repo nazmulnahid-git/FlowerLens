@@ -28,6 +28,11 @@ const MenuModal = ({ visible, onClose }) => {
     }).start();
   }, [visible]);
 
+  const handleClose = () => {
+    setIsFocused(false);
+    onClose();
+  }
+
   return (
     <Modal visible={visible} transparent animationType="none">
 
@@ -36,7 +41,7 @@ const MenuModal = ({ visible, onClose }) => {
         <Pressable
           style={styles.overlay}
           activeOpacity={1}
-          onPress={onClose}
+          onPress={handleClose}
           accessibilityLabel="Close"
         />
 
@@ -55,7 +60,7 @@ const MenuModal = ({ visible, onClose }) => {
           {/* Header Section */}
           <View style={styles.modalHeader}>
             <Text style={styles.modalTitle}>History</Text>
-            <Pressable onPress={onClose} accessibilityLabel="Close">
+            <Pressable onPress={handleClose} accessibilityLabel="Close">
               <IconCancel
                 width={wp(8)}
                 height={wp(8)}
