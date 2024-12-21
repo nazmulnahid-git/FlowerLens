@@ -102,6 +102,33 @@ const styles = StyleSheet.create({
     fontSize: wp(4),
     textAlign: 'center',
   },
+  galleryContainer: {
+    justifyContent: 'center',
+    padding: 10,
+    height: '70%',
+    width: wp(85),
+    alignItems: 'center',
+    backgroundColor: theme.colors.primaryLight,
+    borderRadius: theme.radius.lg,
+    borderWidth: 2,
+    borderColor: theme.colors.primary,
+    borderStyle: 'dashed',
+  },
+  galleryFlexColumnCenter: {
+    alignItems: 'center',
+  },
+  galleryClickToUploadText: {
+    marginTop: 20,
+    color: '#5c58e5',
+    fontSize: 24,
+    fontWeight: '600',
+  },
+  alleryAllowedText: {
+    marginTop: 10,
+    color: '#5c58e5',
+    fontSize: 18,
+    fontWeight: '400',
+  },
 });
 
 export default SearchScreen;
