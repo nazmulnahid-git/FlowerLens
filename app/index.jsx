@@ -1,10 +1,61 @@
-import React, { useState } from 'react';
-import { StatusBar, StyleSheet, View, Text, Pressable } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StatusBar, StyleSheet, View, Text, Pressable, Image } from 'react-native';
 import ScreenWrapper from '@/components/ScreenWrapper';
 import { hp, wp } from '@/helpers/common';
 import MenuButton from '../components/MenuButton';
 import { theme } from '../constants/theme';
 import MenuModal from '../components/MenuModal';
+import { IconGalleryUpload } from '../assets/icons/Icons';
+import * as ImagePicker from 'expo-image-picker';
+
+const GalleryView = () => {
+  const [selectedImage, setSelectedImage] = useState(null);
+
+  const openGallery = async (options) => {
+    let result = await ImagePicker.launchImageLibraryAsync(options);
+
+    console.log(result);
+
+    if (!result.canceled) {
+      setSelectedImage(result.assets[0].uri);
+    }
+  };
+
+  return (
+    <Pressable
+      onPress={() => openGallery({
+        mediaType: 'photo',
+        quality: 1,
+        base64: true,
+      })}
+    >
+      <View style={styles.galleryContainer}>
+        <View style={styles.galleryFlexColumnCenter}>
+          {selectedImage ? (
+            <Image
+              source={{ uri: selectedImage }}
+              style={{ width: 100, height: 100, borderRadius: 8 }}
+              resizeMode="cover"
+            />
+          ) : (
+            <IconGalleryUpload />
+          )}
+          <Text style={styles.galleryClickToUploadText}>Click to upload</Text>
+        </View>
+      </View>
+    </Pressable>
+  );
+};
+
+
+const CameraView = () => {
+  return (
+    <View style={styles.cameraView}>
+      <Text>Camera View</Text>
+    </View>
+  );
+}
+
 
 const TabButton = ({ value, selectedValue, onPress, label }) => {
   const isChecked = (value === selectedValue);
@@ -52,8 +103,8 @@ const SearchScreen = () => {
           </View>
 
           {/* Tab Panels */}
-          {selectedTab === "Camera" && <Text style={styles.tabContent}>This is the First Tab Panel</Text>}
-          {selectedTab === "Gallery" && <Text style={styles.tabContent}>This is the Second Tab Panel</Text>}
+          {selectedTab === "Camera" && <CameraView />}
+          {selectedTab === "Gallery" && <GalleryView />}
         </View>
       </View>
     </ScreenWrapper>
