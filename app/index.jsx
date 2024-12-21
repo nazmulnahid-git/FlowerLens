@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { StatusBar, StyleSheet, View, Text, Pressable, Image } from 'react-native';
-import ScreenWrapper from '@/components/ScreenWrapper';
-import { hp, wp } from '@/helpers/common';
+import ScreenWrapper from '../components/ScreenWrapper';
+import { hp, wp } from '../helpers/common';
 import MenuButton from '../components/MenuButton';
 import { theme } from '../constants/theme';
 import MenuModal from '../components/MenuModal';
 import { GalleryView } from '../components/GalleryAndCameraView';
+import Button from '../components/Button';
+import { IconHeaderLogo, IconInfo } from '../assets/icons/Icons';
+import { router } from 'expo-router';
 
 
 
@@ -40,17 +43,23 @@ const SearchScreen = () => {
   const [selectedTab, setSelectedTab] = useState("Gallery");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   return (
-    <ScreenWrapper bg="white">
+    <ScreenWrapper style={{ paddingTop: 10 }}>
       <StatusBar style="dark" />
-      <View style={styles.container}>
+      <View style={styles.headerSection}>
         <MenuButton size={30} onPress={() => setIsModalVisible(true)} />
-        <MenuModal
-          visible={isModalVisible}
-          onClose={() => setIsModalVisible(false)}
-        />
-
+        <IconHeaderLogo />
+        <Pressable onPress={() => router.push('info')}>
+          <IconInfo width={30} height={30} color={theme.colors.primary} />
+        </Pressable>
+      </View>
+      <MenuModal
+        visible={isModalVisible}
+        onClose={() => setIsModalVisible(false)}
+      />
+      <View style={styles.container}>
         <View style={styles.tabSection}>
           <View style={styles.tabButtons}>
             {['Camera', 'Gallery'].map((item) => (
@@ -63,31 +72,33 @@ const SearchScreen = () => {
               />
             ))}
           </View>
-
-          {/* Tab Panels */}
-          {selectedTab === "Camera" && <CameraView />}
-          {selectedTab === "Gallery" && <GalleryView selectedImage={selectedImage} setSelectedImage={setSelectedImage} />}
         </View>
+        {/* Tab Panels */}
+        {selectedTab === "Camera" && <CameraView />}
+        {selectedTab === "Gallery" && <GalleryView selectedImage={selectedImage} setSelectedImage={setSelectedImage} />}
+
+        <Button title="Search" buttonStyle={styles.seachButton} loading={loading} onPress={() => { }} />
       </View>
     </ScreenWrapper>
   );
 };
 
 const styles = StyleSheet.create({
+  headerSection: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: wp(3) },
   container: {
     flex: 1,
-    paddingHorizontal: wp(5),
-    gap: 10,
+    paddingHorizontal: wp(3),
+    gap: wp(10),
   },
   tabSection: {
-    flex: 1,
     alignItems: 'center',
+    justifyContent: 'flex-start',
+    gap: wp(3),
   },
   tabButtons: {
     flexDirection: 'row',
     gap: wp(3),
-    marginBottom: hp(2),
-    padding: '5',
+    padding: wp(2),
     borderRadius: 10,
     backgroundColor: '#dfe2e8',
   },
@@ -110,38 +121,10 @@ const styles = StyleSheet.create({
   radioLabelActive: {
     color: '#fff',
   },
-  tabContent: {
-    marginTop: hp(3),
-    fontSize: wp(4),
-    textAlign: 'center',
-  },
-  galleryContainer: {
-    justifyContent: 'center',
-    padding: 10,
-    height: '70%',
-    width: wp(85),
-    alignItems: 'center',
-    backgroundColor: theme.colors.primaryLight,
-    borderRadius: theme.radius.lg,
-    borderWidth: 2,
-    borderColor: theme.colors.primary,
-    borderStyle: 'dashed',
-  },
-  galleryFlexColumnCenter: {
-    alignItems: 'center',
-  },
-  galleryClickToUploadText: {
-    marginTop: 20,
-    color: '#5c58e5',
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  alleryAllowedText: {
-    marginTop: 10,
-    color: '#5c58e5',
-    fontSize: 18,
-    fontWeight: '400',
-  },
+  seachButton: {
+    // marginVertical: wp(15),
+    marginHorizontal: wp(3)
+  }
 });
 
 export default SearchScreen;
