@@ -253,7 +253,8 @@ export const IconBack = ({
 
 export const IconGalleryUpload = () => {
   return (
-    <Svg width="87" height="87" viewBox="0 0 87 87" fill="none">
+    <Svg xmlns="http://www.w3.org/2000/svg"
+      width="130" height="130" viewBox="0 0 87 87" fill="none">
       <Path
         d="M16.6919 13.2801C18.6421 6.00166 26.1235 1.68231 33.4019 3.63257L72.9383 14.2263C80.2167 16.1766 84.5361 23.6579 82.5858 30.9364L71.9921 70.4727C70.0418 77.7512 62.5605 82.0705 55.2821 80.1203L15.7457 69.5265C8.46723 67.5763 4.14788 60.0949 6.09814 52.8165L16.6919 13.2801Z"
         fill="#6662FF"
@@ -282,5 +283,6 @@ export const IconGalleryUpload = () => {
         </LinearGradient>
       </Defs>
     </Svg>
+
   );
 };

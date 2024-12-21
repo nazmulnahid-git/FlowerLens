@@ -5,47 +5,8 @@ import { hp, wp } from '@/helpers/common';
 import MenuButton from '../components/MenuButton';
 import { theme } from '../constants/theme';
 import MenuModal from '../components/MenuModal';
-import { IconGalleryUpload } from '../assets/icons/Icons';
-import * as ImagePicker from 'expo-image-picker';
+import { GalleryView } from '../components/GalleryAndCameraView';
 
-const GalleryView = () => {
-  const [selectedImage, setSelectedImage] = useState(null);
-
-  const openGallery = async (options) => {
-    let result = await ImagePicker.launchImageLibraryAsync(options);
-
-    console.log(result);
-
-    if (!result.canceled) {
-      setSelectedImage(result.assets[0].uri);
-    }
-  };
-
-  return (
-    <Pressable
-      onPress={() => openGallery({
-        mediaType: 'photo',
-        quality: 1,
-        base64: true,
-      })}
-    >
-      <View style={styles.galleryContainer}>
-        <View style={styles.galleryFlexColumnCenter}>
-          {selectedImage ? (
-            <Image
-              source={{ uri: selectedImage }}
-              style={{ width: 100, height: 100, borderRadius: 8 }}
-              resizeMode="cover"
-            />
-          ) : (
-            <IconGalleryUpload />
-          )}
-          <Text style={styles.galleryClickToUploadText}>Click to upload</Text>
-        </View>
-      </View>
-    </Pressable>
-  );
-};
 
 
 const CameraView = () => {
@@ -78,6 +39,7 @@ const TabButton = ({ value, selectedValue, onPress, label }) => {
 const SearchScreen = () => {
   const [selectedTab, setSelectedTab] = useState("Gallery");
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   return (
     <ScreenWrapper bg="white">
@@ -104,7 +66,7 @@ const SearchScreen = () => {
 
           {/* Tab Panels */}
           {selectedTab === "Camera" && <CameraView />}
-          {selectedTab === "Gallery" && <GalleryView />}
+          {selectedTab === "Gallery" && <GalleryView selectedImage={selectedImage} setSelectedImage={setSelectedImage} />}
         </View>
       </View>
     </ScreenWrapper>
