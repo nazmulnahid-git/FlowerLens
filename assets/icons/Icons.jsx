@@ -220,7 +220,6 @@ export const IconSearch = ({
   </Svg>
 );
 
-
 export const IconBack = ({
   width,
   height,
