@@ -5,20 +5,10 @@ import { hp, wp } from '../helpers/common';
 import MenuButton from '../components/MenuButton';
 import { theme } from '../constants/theme';
 import MenuModal from '../components/MenuModal';
-import { GalleryView } from '../components/GalleryAndCameraView';
+import { CameraView, GalleryView } from '../components/GalleryAndCameraView';
 import Button from '../components/Button';
 import { IconHeaderLogo, IconInfo } from '../assets/icons/Icons';
 import { router } from 'expo-router';
-
-
-
-const CameraView = () => {
-  return (
-    <View style={styles.cameraView}>
-      <Text>Camera View</Text>
-    </View>
-  );
-}
 
 
 const TabButton = ({ value, selectedValue, onPress, label }) => {
@@ -74,7 +64,7 @@ const SearchScreen = () => {
           </View>
         </View>
         {/* Tab Panels */}
-        {selectedTab === "Camera" && <CameraView />}
+        {selectedTab === "Camera" && <CameraView selectedImage={selectedImage} setSelectedImage={setSelectedImage} />}
         {selectedTab === "Gallery" && <GalleryView selectedImage={selectedImage} setSelectedImage={setSelectedImage} />}
 
         <Button title="Search" buttonStyle={styles.seachButton} loading={loading} onPress={() => { }} />

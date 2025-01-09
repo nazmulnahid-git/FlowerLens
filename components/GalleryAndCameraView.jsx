@@ -69,6 +69,16 @@ export const GalleryView = ({ selectedImage, setSelectedImage }) => {
   );
 };
 
+export const CameraView = ({ selectedImage, setSelectedImage }) => {
+  return (
+    <Pressable onPress={() => { console.log('clicked') }} style={styles.container}>
+      <View style={styles.camViewContainer}>
+        <Text style={styles.uploadText}>Open Camera</Text>
+      </View>
+    </Pressable>
+  );
+};
+
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
@@ -83,6 +93,17 @@ const styles = StyleSheet.create({
     borderColor: theme.colors.primary,
   },
   placeholderContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: wp(85),
+    aspectRatio: 3 / 4,
+    backgroundColor: theme.colors.primaryLight,
+    borderRadius: theme.radius.lg,
+    borderWidth: 2,
+    borderColor: theme.colors.primary,
+    borderStyle: 'dashed',
+  },
+  camViewContainer: {
     justifyContent: 'center',
     alignItems: 'center',
     width: wp(85),
