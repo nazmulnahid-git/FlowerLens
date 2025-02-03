@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StatusBar, StyleSheet, View, Text, Pressable, Image } from 'react-native';
+import { StatusBar, StyleSheet, View, Text, Pressable, Alert } from 'react-native';
 import ScreenWrapper from '../components/ScreenWrapper';
 import { hp, wp } from '../helpers/common';
 import MenuButton from '../components/MenuButton';
@@ -9,6 +9,7 @@ import { CameraView, GalleryView } from '../components/GalleryAndCameraView';
 import Button from '../components/Button';
 import { IconHeaderLogo, IconInfo } from '../assets/icons/Icons';
 import { router } from 'expo-router';
+import { loadTensorflowModel } from 'react-native-fast-tflite';
 
 
 const TabButton = ({ value, selectedValue, onPress, label }) => {
@@ -34,6 +35,28 @@ const SearchScreen = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [model, setModel] = useState(null);
+
+  useEffect(() => {
+    const initializeModel = async () => {
+      try {
+        const loadedModel = await loadTensorflowModel(require('../assets/model/flowerlens.tflite'));
+        setModel(loadedModel);
+        console.log('Model loaded:', loadedModel);
+      } catch (error) {
+        Alert.alert(
+          'Model Loading Error',
+          'Failed to load TensorFlow Lite model.'
+        );
+        console.error('Error loading TensorFlow Lite model:', error);
+      }
+    };
+    initializeModel();
+  }, []);
+
+  const handleSearch = () => {
+
+  }
 
   return (
     <ScreenWrapper style={{ paddingTop: 10 }}>
@@ -63,11 +86,16 @@ const SearchScreen = () => {
             ))}
           </View>
         </View>
-        {/* Tab Panels */}
         {selectedTab === "Camera" && <CameraView selectedImage={selectedImage} setSelectedImage={setSelectedImage} />}
         {selectedTab === "Gallery" && <GalleryView selectedImage={selectedImage} setSelectedImage={setSelectedImage} />}
 
-        <Button title="Search" buttonStyle={styles.seachButton} loading={loading} onPress={() => { }} />
+        <Button
+          title="Search"
+          buttonStyle={styles.seachButton}
+          loading={loading}
+          disabled={!selectedImage || !model}
+          onPress={handleSearch}
+        />
       </View>
     </ScreenWrapper>
   );

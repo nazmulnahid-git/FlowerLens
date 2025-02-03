@@ -20,7 +20,12 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.nazmulnahid.flowerLens"
     },
     "web": {
       "bundler": "metro",
@@ -33,6 +38,12 @@
         "expo-image-picker",
         {
           "photosPermission": "The app accesses your photos to let you search them."
+        }
+      ],
+      [
+        "react-native-fast-tflite",
+        {
+          "enableCoreMLDelegate": true
         }
       ]
     ],
