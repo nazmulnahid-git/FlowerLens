@@ -13,10 +13,13 @@ import { hp, wp } from '../helpers/common';
 import { theme } from '../constants/theme';
 import { IconCancel } from '../assets/icons/Icons';
 import Input from './SearchInput';
+import { useAuth } from '../contexts/AuthContext';
+import Button from '../components/Button';
 
 const MenuModal = ({ visible, onClose }) => {
   const slideAnim = useRef(new Animated.Value(-wp(80))).current;
   const [isFocused, setIsFocused] = useState(false);
+  const { user } = useAuth();
 
   // Animation for modal sliding in/out
   useEffect(() => {
@@ -80,7 +83,17 @@ const MenuModal = ({ visible, onClose }) => {
 
 
           {/* Main Content */}
-          <ScrollView style={styles.modalContent}
+          {
+            !user &&
+            <View>
+
+              <Text style={styles.sectionText}>Please login to see your history</Text>
+
+              {/* <Button title="Sign Up" loading={false} />
+              <Button title="Log In" loading={false} /> */}
+            </View>
+          }
+          {user && <ScrollView style={styles.modalContent}
           >
             <Text style={styles.sectionText}>Additional content goes here...</Text>
             <Text style={styles.sectionText}>Additional content goes here...</Text>
@@ -90,6 +103,7 @@ const MenuModal = ({ visible, onClose }) => {
             <Text style={styles.sectionText}>Additional content goes here...</Text>
 
           </ScrollView>
+          }
 
           <View style={styles.modalFooter}>
             <Pressable onPress={() => { }} accessibilityLabel="Close">

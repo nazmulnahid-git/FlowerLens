@@ -4,6 +4,7 @@ import { wp } from '../helpers/common';
 import { theme } from '../constants/theme';
 import { IconCancel, IconGalleryUpload } from '../assets/icons/Icons';
 import * as ImagePicker from 'expo-image-picker';
+import { Camera } from 'expo-camera';
 
 export const GalleryView = ({ selectedImage, setSelectedImage }) => {
 
@@ -70,9 +71,19 @@ export const GalleryView = ({ selectedImage, setSelectedImage }) => {
 };
 
 export const CameraView = ({ selectedImage, setSelectedImage }) => {
+  const takePicture = async () => {
+    if (cameraRef.current) {
+      const photo = await cameraRef.current.takePictureAsync();
+      setSelectedImage(photo.uri);
+    }
+  };
+
+  const cameraRef = React.useRef(null); // Reference to the camera
+
   return (
-    <Pressable onPress={() => { console.log('clicked') }} style={styles.container}>
+    <Pressable onPress={takePicture} style={styles.container}>
       <View style={styles.camViewContainer}>
+        <Camera ref={cameraRef} style={styles.camViewContainer} />
         <Text style={styles.uploadText}>Open Camera</Text>
       </View>
     </Pressable>

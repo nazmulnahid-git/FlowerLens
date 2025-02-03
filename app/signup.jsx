@@ -25,6 +25,10 @@ const SignupScreen = () => {
     if (!name || !email || !password) {
       return 'Please fill all the fields to sign up.';
     }
+    const nameRegex = /^[a-zA-Z\s]+$/;
+    if (!nameRegex.test(name)) {
+      return 'Please enter a valid name.';
+    }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return 'Please enter a valid email address.';
