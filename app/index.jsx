@@ -34,6 +34,7 @@ const SearchScreen = () => {
   const [selectedTab, setSelectedTab] = useState("Gallery");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [takenImage, setTakenImage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [model, setModel] = useState(null);
 
@@ -86,7 +87,7 @@ const SearchScreen = () => {
             ))}
           </View>
         </View>
-        {selectedTab === "Camera" && <CameraView selectedImage={selectedImage} setSelectedImage={setSelectedImage} />}
+        {selectedTab === "Camera" && <CameraView selectedImage={takenImage} setSelectedImage={setTakenImage} />}
         {selectedTab === "Gallery" && <GalleryView selectedImage={selectedImage} setSelectedImage={setSelectedImage} />}
 
         <Button

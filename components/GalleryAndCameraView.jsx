@@ -2,9 +2,8 @@ import React from 'react';
 import { StyleSheet, View, Text, Pressable, Image, Alert } from 'react-native';
 import { wp } from '../helpers/common';
 import { theme } from '../constants/theme';
-import { IconCancel, IconGalleryUpload } from '../assets/icons/Icons';
+import { IconCameraOpen, IconCancel, IconGalleryUpload } from '../assets/icons/Icons';
 import * as ImagePicker from 'expo-image-picker';
-import { Camera } from 'expo-camera';
 
 export const GalleryView = ({ selectedImage, setSelectedImage }) => {
 
@@ -13,7 +12,7 @@ export const GalleryView = ({ selectedImage, setSelectedImage }) => {
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaType: 'photo',
         quality: 1,
-        base64: true,
+        // base64: true,
       });
 
       if (!result.canceled) {
@@ -40,6 +39,8 @@ export const GalleryView = ({ selectedImage, setSelectedImage }) => {
       ]
     );
   };
+
+
 
   return (
     <Pressable onPress={openGallery} style={styles.container}>
@@ -72,20 +73,63 @@ export const GalleryView = ({ selectedImage, setSelectedImage }) => {
 
 export const CameraView = ({ selectedImage, setSelectedImage }) => {
   const takePicture = async () => {
-    if (cameraRef.current) {
-      const photo = await cameraRef.current.takePictureAsync();
-      setSelectedImage(photo.uri);
+    try {
+      const photo = await ImagePicker.launchCameraAsync({
+        mediaType: 'photo',
+        quality: 1,
+        // base64: true,
+      });
+
+      if (!photo.canceled) {
+        setSelectedImage(photo.assets[0].uri);
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Unable to take picture. Please try again.');
     }
   };
 
-  const cameraRef = React.useRef(null); // Reference to the camera
+  const handleDiscardImage = () => {
+    Alert.alert(
+      'Discard',
+      'Are you sure you want to discard this image?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'OK',
+          onPress: () => setSelectedImage(null),
+        },
+      ]
+    );
+  };
 
   return (
     <Pressable onPress={takePicture} style={styles.container}>
-      <View style={styles.camViewContainer}>
-        <Camera ref={cameraRef} style={styles.camViewContainer} />
-        <Text style={styles.uploadText}>Open Camera</Text>
-      </View>
+      {selectedImage ? (
+        <>
+          <Image
+            style={styles.image}
+            source={{ uri: selectedImage }}
+            resizeMode="contain"
+          />
+          <Pressable style={styles.crossButton} onPress={handleDiscardImage}>
+            <IconCancel
+              width={25}
+              height={25}
+              strokeWidth={1.5}
+              color={theme.colors.danger}
+            />
+          </Pressable>
+          <Text style={styles.uploadText}>Click to upload</Text>
+        </>
+      ) : (
+        <View style={styles.placeholderContainer}>
+          <IconCameraOpen />
+          <Text style={styles.uploadText}>Open Camera</Text>
+        </View>
+      )}
     </Pressable>
   );
 };
@@ -97,8 +141,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: wp(85),
-    aspectRatio: 3 / 4,
-    backgroundColor: theme.colors.primaryLight,
+    height: wp(85) * (4 / 3),
     borderRadius: theme.radius.lg,
     borderWidth: 2,
     borderColor: theme.colors.primary,
@@ -107,36 +150,26 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: wp(85),
-    aspectRatio: 3 / 4,
-    backgroundColor: theme.colors.primaryLight,
+    height: wp(85) * (4 / 3),
     borderRadius: theme.radius.lg,
     borderWidth: 2,
     borderColor: theme.colors.primary,
     borderStyle: 'dashed',
-  },
-  camViewContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: wp(85),
-    aspectRatio: 3 / 4,
-    backgroundColor: theme.colors.primaryLight,
-    borderRadius: theme.radius.lg,
-    borderWidth: 2,
-    borderColor: theme.colors.primary,
-    borderStyle: 'dashed',
+    backgroundColor: theme.colors.secondaryLight,
   },
   uploadText: {
-    marginTop: 20,
+    marginTop: 10,
     color: theme.colors.primary,
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '600',
   },
   crossButton: {
     position: 'absolute',
     top: 10,
-    right: 10,
-    backgroundColor: 'rgba(202, 206, 239, 0.32)',
+    right: 25,
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
     borderRadius: 15,
-    padding: 5,
+    padding: 3,
   },
 });
+
