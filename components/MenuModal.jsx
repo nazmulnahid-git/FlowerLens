@@ -14,12 +14,13 @@ import { theme } from '../constants/theme';
 import { IconCancel } from '../assets/icons/Icons';
 import Input from './SearchInput';
 import { useAuth } from '../contexts/AuthContext';
-import Button from '../components/Button';
+import { useRouter } from 'expo-router';
 
 const MenuModal = ({ visible, onClose }) => {
   const slideAnim = useRef(new Animated.Value(-wp(80))).current;
   const [isFocused, setIsFocused] = useState(false);
   const { user } = useAuth();
+  const router = useRouter();
 
   // Animation for modal sliding in/out
   useEffect(() => {
@@ -40,7 +41,6 @@ const MenuModal = ({ visible, onClose }) => {
     <Modal visible={visible} transparent animationType="none"
       onRequestClose={handleClose}
     >
-
       <View style={styles.modalOverlay}>
         {/* Dismiss Modal on Outside Press */}
         <Pressable
@@ -66,7 +66,7 @@ const MenuModal = ({ visible, onClose }) => {
           }>
             {
               !isFocused && <View style={styles.modalHeaderInner}>
-                <Text style={styles.modalTitle}>History</Text>
+                <Text style={styles.modalTitle}>{user ? 'History' : 'Welcome'}</Text>
                 <Pressable onPress={handleClose} accessibilityLabel="Close">
                   <IconCancel
                     width={wp(8)}
@@ -77,33 +77,49 @@ const MenuModal = ({ visible, onClose }) => {
                 </Pressable>
               </View>
             }
-            <Input isFocused={isFocused} setIsFocused={setIsFocused} style={{ backgroundColor: 'white' }} />
+            {user ? <Input isFocused={isFocused} setIsFocused={setIsFocused} style={{ backgroundColor: 'white' }} /> :
+              <Text style={styles.subText}>You are not logged in.</Text>
+            }
+
           </View>
-
-
+          {
+            !user && <></>
+          }
 
           {/* Main Content */}
-          {
-            !user &&
-            <View>
+          {!user ? (
+            <View style={styles.authContainer}>
+              <Text style={styles.subText}>Please log in or sign up to save and access your search history.</Text>
+              <Pressable
+                style={({ pressed }) => [styles.button, styles.loginBtn, pressed && styles.pressed]}
+                onPress={() => {
+                  handleClose();
+                  router.push('login');
+                }}
+              >
+                <Text style={styles.buttonText}>Log In</Text>
+              </Pressable>
 
-              <Text style={styles.sectionText}>Please login to see your history</Text>
-
-              {/* <Button title="Sign Up" loading={false} />
-              <Button title="Log In" loading={false} /> */}
+              <Pressable
+                style={({ pressed }) => [styles.button, styles.signupBtn, pressed && styles.pressed]}
+                onPress={() => {
+                  handleClose();
+                  router.push('signup');
+                }}
+              >
+                <Text style={[styles.buttonText, styles.signupText]}>Sign Up</Text>
+              </Pressable>
             </View>
-          }
-          {user && <ScrollView style={styles.modalContent}
-          >
-            <Text style={styles.sectionText}>Additional content goes here...</Text>
-            <Text style={styles.sectionText}>Additional content goes here...</Text>
-            <Text style={styles.sectionText}>Additional content goes here...</Text>
-            <Text style={styles.sectionText}>Additional content goes here...</Text>
-            <Text style={styles.sectionText}>Additional content goes here...</Text>
-            <Text style={styles.sectionText}>Additional content goes here...</Text>
-
-          </ScrollView>
-          }
+          ) : (
+            <ScrollView style={styles.modalContent}>
+              <Text style={styles.sectionText}>Additional content goes here...</Text>
+              <Text style={styles.sectionText}>Additional content goes here...</Text>
+              <Text style={styles.sectionText}>Additional content goes here...</Text>
+              <Text style={styles.sectionText}>Additional content goes here...</Text>
+              <Text style={styles.sectionText}>Additional content goes here...</Text>
+              <Text style={styles.sectionText}>Additional content goes here...</Text>
+            </ScrollView>
+          )}
 
           <View style={styles.modalFooter}>
             <Pressable onPress={() => { }} accessibilityLabel="Close">
@@ -138,18 +154,18 @@ const styles = StyleSheet.create({
     elevation: 10,
   },
   modalHeader: {
-    padding: '7',
-    paddingBottom: '10',
+    padding: 7,
+    paddingBottom: 10,
     backgroundColor: theme.colors.primaryLight,
     borderTopLeftRadius: 0,
     borderTopRightRadius: 0,
     borderBottomLeftRadius: theme.radius.lg,
     borderBottomRightRadius: theme.radius.lg,
-
   },
   modalHeaderFocused: {
     backgroundColor: '#cbd0e7',
-    paddingTop: '10', borderTopLeftRadius: 0,
+    paddingTop: 10,
+    borderTopLeftRadius: 0,
     borderTopRightRadius: 0,
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
@@ -158,8 +174,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: '5',
-    paddingHorizontal: '10',
+    paddingVertical: 5,
+    paddingHorizontal: 10,
   },
   modalTitle: {
     fontSize: wp(7),
@@ -174,5 +190,60 @@ const styles = StyleSheet.create({
     fontSize: wp(4),
     marginBottom: hp(1),
     color: theme.colors.textPrimary,
+  },
+  authContainer: {
+    padding: wp(5),
+    borderRadius: wp(4),
+    margin: wp(3),
+    alignItems: 'center',
+    backgroundColor: theme.colors.primaryLight,
+    borderRadius: theme.radius.md,
+    shadowColor: theme.colors.primary,
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 3 },
+    elevation: 5,
+  },
+  headerText: {
+    fontSize: wp(6),
+    fontWeight: 'bold',
+    color: theme.colors.primary,
+    marginBottom: hp(1),
+  },
+  subText: {
+    fontSize: wp(4),
+    color: theme.colors.textPrimary,
+    margin: hp(1),
+  },
+  button: {
+    width: '80%',
+    paddingVertical: hp(1.5),
+    borderRadius: wp(2),
+    alignItems: 'center',
+    marginVertical: hp(1),
+  },
+  loginBtn: {
+    backgroundColor: theme.colors.primary,
+  },
+  signupBtn: {
+    borderWidth: 1,
+    borderColor: theme.colors.primary,
+    backgroundColor: '#fff',
+  },
+  buttonText: {
+    fontSize: wp(3),
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  signupText: {
+    color: theme.colors.primary,
+  },
+  pressed: {
+    opacity: 0.8,
+  },
+  modalFooter: {
+    padding: 10,
+    backgroundColor: theme.colors.primaryLight,
+    alignItems: 'center',
   },
 });
