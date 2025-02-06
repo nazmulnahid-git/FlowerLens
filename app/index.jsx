@@ -9,7 +9,6 @@ import { CameraView, GalleryView } from '../components/GalleryAndCameraView';
 import Button from '../components/Button';
 import { IconHeaderLogo, IconInfo } from '../assets/icons/Icons';
 import { router } from 'expo-router';
-import { loadTensorflowModel } from 'react-native-fast-tflite';
 
 
 const TabButton = ({ value, selectedValue, onPress, label }) => {
@@ -36,24 +35,6 @@ const SearchScreen = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [takenImage, setTakenImage] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [model, setModel] = useState(null);
-
-  useEffect(() => {
-    const initializeModel = async () => {
-      try {
-        const loadedModel = await loadTensorflowModel(require('../assets/model/flowerlens.tflite'));
-        setModel(loadedModel);
-        console.log('Model loaded:', loadedModel);
-      } catch (error) {
-        Alert.alert(
-          'Model Loading Error',
-          'Failed to load TensorFlow Lite model.'
-        );
-        console.error('Error loading TensorFlow Lite model:', error);
-      }
-    };
-    initializeModel();
-  }, []);
 
   const handleSearch = () => {
 
@@ -94,7 +75,7 @@ const SearchScreen = () => {
           title="Search"
           buttonStyle={styles.seachButton}
           loading={loading}
-          disabled={!selectedImage || !model}
+          disabled={!selectedImage}
           onPress={handleSearch}
         />
       </View>
