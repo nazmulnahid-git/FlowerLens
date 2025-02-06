@@ -9,6 +9,7 @@ import { CameraView, GalleryView } from '../components/GalleryAndCameraView';
 import Button from '../components/Button';
 import { IconHeaderLogo, IconInfo } from '../assets/icons/Icons';
 import { router } from 'expo-router';
+import { cloudinary } from '../lib/cloudinary';
 
 
 const TabButton = ({ value, selectedValue, onPress, label }) => {
@@ -36,8 +37,20 @@ const SearchScreen = () => {
   const [takenImage, setTakenImage] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const handleSearch = () => {
-
+  const handleSearch = async () => {
+    if (!selectedImage && !takenImage) {
+      Alert.alert("Error", "Please provide an image");
+      return;
+    }
+    setLoading(true);
+    const imgURL = await cloudinary.uploadImage(selectedTab === "Camera" ? takenImage?.base64 : selectedImage?.base64);
+    if (!imgURL) {
+      setLoading(false);
+      Alert.alert("Error", "Unable to upload image");
+      return;
+    }
+    console.log(imgURL);
+    setLoading(false);
   }
 
   return (
@@ -75,7 +88,6 @@ const SearchScreen = () => {
           title="Search"
           buttonStyle={styles.seachButton}
           loading={loading}
-          disabled={!selectedImage}
           onPress={handleSearch}
         />
       </View>
