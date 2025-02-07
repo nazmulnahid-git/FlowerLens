@@ -60,7 +60,7 @@ const SearchScreen = () => {
 
     // Call the prediction API
     try {
-      const response = await fetch(`${apiBaseUrl}/predict?image_url=${encodeURIComponent(imgURL)}`);
+      const response = await fetch(`${apiBaseUrl}?image_url=${encodeURIComponent(imgURL)}`);
 
       if (!response.ok) {
         throw new Error(`API Error: ${response.statusText}`);
