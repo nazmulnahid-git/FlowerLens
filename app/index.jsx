@@ -39,6 +39,9 @@ const SearchScreen = () => {
   const [loading, setLoading] = useState(false);
 
   const handleSearch = async () => {
+    const imageId = 1; // Replace this with dynamic logic to get the ID
+    router.push(`/${imageId}`);
+    return;
     if (!selectedImage && !takenImage) {
       Alert.alert("Error", "Please provide an image");
       return;
@@ -63,17 +66,14 @@ const SearchScreen = () => {
       const response = await fetch(`${apiBaseUrl}?image_url=${encodeURIComponent(imgURL)}`);
 
       if (!response.ok) {
-        throw new Error(`API Error: ${response.statusText}`);
+        Alert.alert("Error", "Failed to get a prediction");
+        return;
       }
 
       const data = await response.json();
-      console.log("Prediction Response:", data);
-
-      // You can update the UI or navigate based on the prediction result
-      Alert.alert("Prediction Result", JSON.stringify(data));
-
+      const parsedData = JSON.parse(data);
+      router.push(`/${parsedData.class_id}`);
     } catch (error) {
-      console.error("Prediction failed:", error);
       Alert.alert("Error", "Failed to get a prediction");
     } finally {
       setLoading(false);

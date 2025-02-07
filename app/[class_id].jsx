@@ -9,38 +9,39 @@ const ClassDetails = () => {
   const [details, setDetails] = useState(null);
 
   const getDetails = async () => {
-    console.log('i am here');
     const res = await getFlowerData(1);
     if (res.success) setDetails(res.data);
-    console.log(res);
   }
   useEffect(() => {
     getDetails();
   }, [class_id]);
-  console.log(router.params.class_id);
-  // Destructure the className and classDescription from route.params
-  // const { data } = route.params;
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Rose</Text>
-      <Text style={styles.description}>asdf</Text>
-    </View>
-  )
+    details ?
+      <View style={styles.noDataContainer}>
+        <Text style={styles.noDataTitle}> {details.flower_name} </Text>
+        <Text style={styles.noDataDescription}>Description</Text>
+      </View>
+      :
+      <View style={styles.noDataContainer}>
+        <Text style={styles.noDataTitle}> Opps </Text>
+        <Text style={styles.noDataDescription}>Something wen wrong..!</Text>
+      </View>
+  );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  noDataContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
   },
-  title: {
+  noDataTitle: {
     fontSize: 24,
     fontWeight: 'bold',
   },
-  description: {
+  noDataDescription: {
     fontSize: 16,
     marginTop: 10,
   },
