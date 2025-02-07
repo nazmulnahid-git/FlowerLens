@@ -10,6 +10,7 @@ import Button from '../components/Button';
 import { IconHeaderLogo, IconInfo } from '../assets/icons/Icons';
 import { router } from 'expo-router';
 import { cloudinary } from '../lib/cloudinary';
+import { apiBaseUrl } from '../constants';
 
 
 const TabButton = ({ value, selectedValue, onPress, label }) => {
@@ -43,15 +44,42 @@ const SearchScreen = () => {
       return;
     }
     setLoading(true);
-    const imgURL = await cloudinary.uploadImage(selectedTab === "Camera" ? takenImage?.base64 : selectedImage?.base64);
+
+    // Upload Image to Cloudinary
+    const imgURL = await cloudinary.uploadImage(
+      selectedTab === "Camera" ? takenImage?.base64 : selectedImage?.base64
+    );
+
     if (!imgURL) {
       setLoading(false);
       Alert.alert("Error", "Unable to upload image");
       return;
     }
-    console.log(imgURL);
-    setLoading(false);
-  }
+
+    console.log("Uploaded Image URL:", imgURL);
+
+    // Call the prediction API
+    try {
+      const response = await fetch(`${apiBaseUrl}/predict?image_url=${encodeURIComponent(imgURL)}`);
+
+      if (!response.ok) {
+        throw new Error(`API Error: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      console.log("Prediction Response:", data);
+
+      // You can update the UI or navigate based on the prediction result
+      Alert.alert("Prediction Result", JSON.stringify(data));
+
+    } catch (error) {
+      console.error("Prediction failed:", error);
+      Alert.alert("Error", "Failed to get a prediction");
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   return (
     <ScreenWrapper style={{ paddingTop: 10 }}>
