@@ -37,7 +37,7 @@ const SearchScreen = () => {
   const [loading, setLoading] = useState(false);
 
   const handleSearch = () => {
-
+    
   }
 
   return (
