@@ -12,11 +12,11 @@ export const GalleryView = ({ selectedImage, setSelectedImage }) => {
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaType: 'photo',
         quality: 1,
-        // base64: true,
+        base64: true,
       });
 
       if (!result.canceled) {
-        setSelectedImage(result.assets[0].uri);
+        setSelectedImage(result.assets[0]);
       }
     } catch (error) {
       Alert.alert('Error', 'Unable to open gallery. Please try again.');
@@ -48,7 +48,7 @@ export const GalleryView = ({ selectedImage, setSelectedImage }) => {
         <>
           <Image
             style={styles.image}
-            source={{ uri: selectedImage }}
+            source={{ uri: selectedImage.uri }}
             resizeMode="contain"
           />
           <Pressable style={styles.crossButton} onPress={handleDiscardImage}>
@@ -77,11 +77,11 @@ export const CameraView = ({ selectedImage, setSelectedImage }) => {
       const photo = await ImagePicker.launchCameraAsync({
         mediaType: 'photo',
         quality: 1,
-        // base64: true,
+        base64: true,
       });
 
       if (!photo.canceled) {
-        setSelectedImage(photo.assets[0].uri);
+        setSelectedImage(photo.assets[0]);
       }
     } catch (error) {
       Alert.alert('Error', 'Unable to take picture. Please try again.');
@@ -111,7 +111,7 @@ export const CameraView = ({ selectedImage, setSelectedImage }) => {
         <>
           <Image
             style={styles.image}
-            source={{ uri: selectedImage }}
+            source={{ uri: selectedImage.uri }}
             resizeMode="contain"
           />
           <Pressable style={styles.crossButton} onPress={handleDiscardImage}>
