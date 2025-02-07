@@ -7,7 +7,8 @@ import {
   Animated,
   StyleSheet,
   ScrollView,
-  Easing
+  Easing,
+  FlatList
 } from 'react-native';
 import { hp, wp } from '../helpers/common';
 import { theme } from '../constants/theme';
@@ -21,6 +22,13 @@ const MenuModal = ({ visible, onClose }) => {
   const [isFocused, setIsFocused] = useState(false);
   const { user } = useAuth();
   const router = useRouter();
+  const history=[
+    {
+      id:1,
+      title:'History 1',
+    }
+  ];
+
 
   // Animation for modal sliding in/out
   useEffect(() => {
@@ -111,14 +119,14 @@ const MenuModal = ({ visible, onClose }) => {
               </Pressable>
             </View>
           ) : (
-            <ScrollView style={styles.modalContent}>
+            <FlatList style={styles.modalContent}>
               <Text style={styles.sectionText}>Additional content goes here...</Text>
               <Text style={styles.sectionText}>Additional content goes here...</Text>
               <Text style={styles.sectionText}>Additional content goes here...</Text>
               <Text style={styles.sectionText}>Additional content goes here...</Text>
               <Text style={styles.sectionText}>Additional content goes here...</Text>
               <Text style={styles.sectionText}>Additional content goes here...</Text>
-            </ScrollView>
+            </FlatList>
           )}
 
           <View style={styles.modalFooter}>
