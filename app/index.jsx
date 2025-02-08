@@ -39,18 +39,6 @@ const SearchScreen = () => {
   const [loading, setLoading] = useState(false);
 
   const handleSearch = async () => {
-    const imageId = 1; // Replace this with dynamic logic to get the ID
-    router.push(
-      {
-        pathname: `/details`,
-        params: {
-          class_id: imageId,
-          predicion_percentage: 50,
-          flower_image: selectedImage?.uri,
-        }
-      }
-    );
-    return;
     if (!selectedImage && !takenImage) {
       Alert.alert("Error", "Please provide an image");
       return;
@@ -80,9 +68,20 @@ const SearchScreen = () => {
       }
 
       const data = await response.json();
-      const parsedData = JSON.parse(data);
-      router.push(`/${parsedData.class_id}`);
+      console.log("data:", data);
+      const { flower_class, probability } = data;
+      router.push(
+        {
+          pathname: `/details`,
+          params: {
+            class_id: flower_class,
+            predicion_percentage: probability,
+            flower_image: selectedImage?.uri,
+          }
+        }
+      );
     } catch (error) {
+      console.log("Error:", error);
       Alert.alert("Error", "Failed to get a prediction");
     } finally {
       setLoading(false);
