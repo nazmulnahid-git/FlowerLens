@@ -74,9 +74,9 @@ const SearchScreen = () => {
         {
           pathname: `/details`,
           params: {
-            class_id: flower_class,
+            class_id: flower_class + 1, // +1 to convert to 1-based indexing
             predicion_percentage: probability,
-            flower_image: selectedImage?.uri,
+            flower_image: selectedTab === "Camera" ? takenImage?.uri : selectedImage?.uri,
           }
         }
       );

@@ -59,7 +59,7 @@ export const GalleryView = ({ selectedImage, setSelectedImage }) => {
               color={theme.colors.danger}
             />
           </Pressable>
-          <Text style={styles.uploadText}>Click to upload</Text>
+          {/* <Text style={styles.uploadText}>Click to upload</Text> */}
         </>
       ) : (
         <View style={styles.placeholderContainer}>
@@ -122,7 +122,7 @@ export const CameraView = ({ selectedImage, setSelectedImage }) => {
               color={theme.colors.danger}
             />
           </Pressable>
-          <Text style={styles.uploadText}>Click to upload</Text>
+          {/* <Text style={styles.uploadText}>Click to upload</Text> */}
         </>
       ) : (
         <View style={styles.placeholderContainer}>

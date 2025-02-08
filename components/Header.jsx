@@ -14,7 +14,7 @@ const Header = ({
       {
         showBackButton && (
           <View style={styles.backButton}>
-            <BackButton size={hp(3.5)} color={theme.colors.text} />
+            <BackButton size={hp(3.5)} color={theme.colors.primary} />
           </View>
         )
       }
