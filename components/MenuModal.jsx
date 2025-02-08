@@ -16,20 +16,25 @@ import { IconCancel } from '../assets/icons/Icons';
 import Input from './SearchInput';
 import { useAuth } from '../contexts/AuthContext';
 import { useRouter } from 'expo-router';
+import { getHistory } from '../services/HistoryService';
 
 const MenuModal = ({ visible, onClose }) => {
   const slideAnim = useRef(new Animated.Value(-wp(80))).current;
   const [isFocused, setIsFocused] = useState(false);
+  const [history, setHistory] = useState([]);
   const { user } = useAuth();
   const router = useRouter();
-  const history=[
-    {
-      id:1,
-      title:'History 1',
+
+  const getHistoryData = async () => {
+    try {
+      const res = await getHistory(user.id);
+      if (res.success) setHistory(res.data);
+    } catch (error) {
+      console.error('Error fetching history:', error);
+    } finally {
+      setLoading(false);
     }
-  ];
-
-
+  };
   // Animation for modal sliding in/out
   useEffect(() => {
     Animated.timing(slideAnim, {
@@ -40,10 +45,16 @@ const MenuModal = ({ visible, onClose }) => {
     }).start();
   }, [visible]);
 
+  useEffect(() => {
+    getHistoryData();
+  }, []);
+
   const handleClose = () => {
     setIsFocused(false);
     onClose();
   }
+
+  console.log('history', history);
 
   return (
     <Modal visible={visible} transparent animationType="none"

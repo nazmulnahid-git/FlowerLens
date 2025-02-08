@@ -11,6 +11,8 @@ import { IconHeaderLogo, IconInfo } from '../assets/icons/Icons';
 import { router } from 'expo-router';
 import { cloudinary } from '../lib/cloudinary';
 import { apiBaseUrl } from '../constants';
+import { useAuth } from '../contexts/AuthContext';
+import { createHistory } from '../services/HistoryService';
 
 
 const TabButton = ({ value, selectedValue, onPress, label }) => {
@@ -37,6 +39,7 @@ const SearchScreen = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [takenImage, setTakenImage] = useState(null);
   const [loading, setLoading] = useState(false);
+  const { user } = useAuth();
 
   const handleSearch = async () => {
     if (!selectedImage && !takenImage) {
@@ -70,6 +73,13 @@ const SearchScreen = () => {
       const data = await response.json();
       console.log("data:", data);
       const { flower_class, probability } = data;
+      if (user) {
+        await createHistory({
+          user_id: user.id,
+          details_id: flower_class + 1,
+          image: imgURL,
+        });
+      }
       router.push(
         {
           pathname: `/details`,
