@@ -40,7 +40,16 @@ const SearchScreen = () => {
 
   const handleSearch = async () => {
     const imageId = 1; // Replace this with dynamic logic to get the ID
-    router.push(`/${imageId}`);
+    router.push(
+      {
+        pathname: `/details`,
+        params: {
+          class_id: imageId,
+          predicion_percentage: 50,
+          flower_image: selectedImage?.uri,
+        }
+      }
+    );
     return;
     if (!selectedImage && !takenImage) {
       Alert.alert("Error", "Please provide an image");
