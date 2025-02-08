@@ -92,7 +92,7 @@ const SignupScreen = () => {
     <ScreenWrapper bg="white">
       <StatusBar style="dark" />
       <View style={styles.container}>
-        <BackButton height={40} width={40} />
+        <BackButton size={30} color={colors.primary} />
         <View>
           <Text style={styles.welcomeText}>Let's</Text>
           <Text style={styles.welcomeText}>Get Started</Text>
@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: wp(5),
-    gap: 45,
+    gap: 25,
   },
   welcomeText: {
     fontSize: hp(5),

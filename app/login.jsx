@@ -74,10 +74,10 @@ const LoginScreen = () => {
   ];
 
   return (
-    <ScreenWrapper style={{ paddingTop: 10 }}>
+    <ScreenWrapper bg="white">
       <StatusBar style="dark" />
       <View style={styles.container}>
-        <BackButton height={40} width={40} />
+        <BackButton size={30} color={colors.primary} />
         <View>
           <Text style={styles.welcomeText}>Hey,</Text>
           <Text style={styles.welcomeText}>Welcome Back</Text>
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: wp(5),
-    gap: 45,
+    gap: 25,
   },
   welcomeText: {
     fontSize: hp(5),
