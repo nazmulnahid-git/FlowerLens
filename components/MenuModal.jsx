@@ -8,7 +8,8 @@ import {
   StyleSheet,
   ScrollView,
   Easing,
-  FlatList
+  FlatList,
+  Image,
 } from 'react-native';
 import { hp, wp } from '../helpers/common';
 import { theme } from '../constants/theme';
@@ -27,49 +28,58 @@ const MenuModal = ({ visible, onClose }) => {
 
   const getHistoryData = async () => {
     try {
-      const res = await getHistory(user.id);
+      const res = await getHistory(user?.id);
       if (res.success) setHistory(res.data);
     } catch (error) {
       console.error('Error fetching history:', error);
-    } finally {
-      setLoading(false);
     }
   };
-  // Animation for modal sliding in/out
+
   useEffect(() => {
     Animated.timing(slideAnim, {
       toValue: visible ? 0 : -wp(80),
       duration: 400,
-      easing: Easing.inOut(Easing.ease), // Add easing for smoother effect
+      easing: Easing.inOut(Easing.ease),
       useNativeDriver: true,
     }).start();
   }, [visible]);
 
   useEffect(() => {
-    getHistoryData();
-  }, []);
+    if (user) getHistoryData();
+  }, [user]);
 
   const handleClose = () => {
     setIsFocused(false);
     onClose();
-  }
+  };
 
-  console.log('history', history);
+  const renderHistoryItem = ({ item }) => (
+    <Pressable onPress={() => {
+      handleClose();
+      router.push(
+        {
+          pathname: `/details`,
+          params: {
+            class_id: item.details_id,
+            predicion_percentage: 50,
+            flower_image: item.image,
+          }
+        }
+      );
+    }
+    }>
+      <View style={styles.historyItem}>
+        <Image source={{ uri: item.image }} style={styles.flowerImage} />
+        <Text style={styles.flowerName}>{item.details.flower_name}</Text>
+      </View>
+    </Pressable >
+  );
 
   return (
-    <Modal visible={visible} transparent animationType="none"
-      onRequestClose={handleClose}
-    >
+    <Modal visible={visible} transparent animationType="none" onRequestClose={handleClose}>
       <View style={styles.modalOverlay}>
-        {/* Dismiss Modal on Outside Press */}
-        <Pressable
-          style={styles.overlay}
-          activeOpacity={1}
-          onPress={handleClose}
-          accessibilityLabel="Close"
-        />
+        <Pressable style={styles.overlay} activeOpacity={1} onPress={handleClose} />
 
-        {/* Modal Content */}
         <Animated.View
           style={[
             styles.modalContainer,
@@ -79,33 +89,22 @@ const MenuModal = ({ visible, onClose }) => {
             },
           ]}
         >
-          {/* Header Section */}
-          <View style={
-            [styles.modalHeader, isFocused && styles.modalHeaderFocused]
-          }>
-            {
-              !isFocused && <View style={styles.modalHeaderInner}>
+          <View style={[styles.modalHeader, isFocused && styles.modalHeaderFocused]}>
+            {!isFocused && (
+              <View style={styles.modalHeaderInner}>
                 <Text style={styles.modalTitle}>{user ? 'History' : 'Welcome'}</Text>
-                <Pressable onPress={handleClose} accessibilityLabel="Close">
-                  <IconCancel
-                    width={wp(8)}
-                    height={wp(8)}
-                    strokeWidth={1.2}
-                    color={theme.colors.danger}
-                  />
+                <Pressable onPress={handleClose}>
+                  <IconCancel width={wp(8)} height={wp(8)} strokeWidth={1.2} color={theme.colors.danger} />
                 </Pressable>
               </View>
-            }
-            {user ? <Input isFocused={isFocused} setIsFocused={setIsFocused} style={{ backgroundColor: 'white' }} /> :
+            )}
+            {user ? (
+              <Input isFocused={isFocused} setIsFocused={setIsFocused} style={{ backgroundColor: 'white' }} />
+            ) : (
               <Text style={styles.subText}>You are not logged in.</Text>
-            }
-
+            )}
           </View>
-          {
-            !user && <></>
-          }
 
-          {/* Main Content */}
           {!user ? (
             <View style={styles.authContainer}>
               <Text style={styles.subText}>Please log in or sign up to save and access your search history.</Text>
@@ -118,7 +117,6 @@ const MenuModal = ({ visible, onClose }) => {
               >
                 <Text style={styles.buttonText}>Log In</Text>
               </Pressable>
-
               <Pressable
                 style={({ pressed }) => [styles.button, styles.signupBtn, pressed && styles.pressed]}
                 onPress={() => {
@@ -130,22 +128,19 @@ const MenuModal = ({ visible, onClose }) => {
               </Pressable>
             </View>
           ) : (
-            <FlatList style={styles.modalContent}>
-              <Text style={styles.sectionText}>Additional content goes here...</Text>
-              <Text style={styles.sectionText}>Additional content goes here...</Text>
-              <Text style={styles.sectionText}>Additional content goes here...</Text>
-              <Text style={styles.sectionText}>Additional content goes here...</Text>
-              <Text style={styles.sectionText}>Additional content goes here...</Text>
-              <Text style={styles.sectionText}>Additional content goes here...</Text>
-            </FlatList>
+            // <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+            <FlatList
+              data={history}
+              keyExtractor={(item) => item.id}
+              renderItem={renderHistoryItem}
+              contentContainerStyle={styles.historyList}
+            />
+            // </ScrollView>
           )}
 
+
           <View style={styles.modalFooter}>
-            <Pressable onPress={() => { }} accessibilityLabel="Close">
-
-              <Text>Md Nazmul Nahid</Text>
-            </Pressable>
-
+            <Text>{user?.name}</Text>
           </View>
         </Animated.View>
       </View>
@@ -176,16 +171,12 @@ const styles = StyleSheet.create({
     padding: 7,
     paddingBottom: 10,
     backgroundColor: theme.colors.primaryLight,
-    borderTopLeftRadius: 0,
-    borderTopRightRadius: 0,
     borderBottomLeftRadius: theme.radius.lg,
     borderBottomRightRadius: theme.radius.lg,
   },
   modalHeaderFocused: {
     backgroundColor: '#cbd0e7',
     paddingTop: 10,
-    borderTopLeftRadius: 0,
-    borderTopRightRadius: 0,
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
   },
@@ -201,15 +192,6 @@ const styles = StyleSheet.create({
     fontWeight: theme.fonts.bold,
     color: theme.colors.primary,
   },
-  modalContent: {
-    flex: 1,
-    paddingTop: hp(1),
-  },
-  sectionText: {
-    fontSize: wp(4),
-    marginBottom: hp(1),
-    color: theme.colors.textPrimary,
-  },
   authContainer: {
     padding: wp(5),
     borderRadius: wp(4),
@@ -222,12 +204,6 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     shadowOffset: { width: 0, height: 3 },
     elevation: 5,
-  },
-  headerText: {
-    fontSize: wp(6),
-    fontWeight: 'bold',
-    color: theme.colors.primary,
-    marginBottom: hp(1),
   },
   subText: {
     fontSize: wp(4),
@@ -259,6 +235,27 @@ const styles = StyleSheet.create({
   },
   pressed: {
     opacity: 0.8,
+  },
+  historyList: {
+    padding: 10,
+  },
+  historyItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+    backgroundColor: '#f9f9f9',
+    borderRadius: 8,
+    marginBottom: 10,
+  },
+  flowerImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginRight: 10,
+  },
+  flowerName: {
+    fontSize: wp(4),
+    color: theme.colors.textPrimary,
   },
   modalFooter: {
     padding: 10,
