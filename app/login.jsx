@@ -9,6 +9,7 @@ import BackButton from '../components/BackButton';
 import Button from '../components/Button';
 import Input from '../components/Input';
 import ScreenWrapper from '../components/ScreenWrapper';
+import { supabase } from '../lib/supabase';
 
 const { colors } = theme;
 
@@ -45,17 +46,21 @@ const LoginScreen = () => {
     console.log('Form Data', formData);
 
     setLoading(true);
-    // try {
-    //   const { error } = await supabase.auth.signInWithPassword({
-    //     email: formData.email,
-    //     password: formData.password,
-    //   });
-    //   if (error) throw new Error(error.message);
-    // } catch (err) {
-    //   Alert.alert('Login Failed', err.message);
-    // } finally {
-    //   setLoading(false);
-    // }
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email: formData.email,
+        password: formData.password,
+      });
+      if (error) {
+        Alert.alert('Failed', error.message);
+        return;
+      }
+      router.replace('/');
+    } catch (err) {
+      Alert.alert('Login Failed', err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const inputConfig = [

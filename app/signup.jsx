@@ -8,6 +8,7 @@ import { theme } from '../constants/theme';
 import BackButton from '../components/BackButton';
 import Button from '../components/Button';
 import Input from '../components/Input';
+import { supabase } from '../lib/supabase';
 
 const { colors } = theme;
 
@@ -50,22 +51,26 @@ const SignupScreen = () => {
 
     setLoading(true);
 
-    // try {
-    //   const { error } = await supabase.auth.signUp({
-    //     email: formData.email,
-    //     password: formData.password,
-    //     options: {
-    //       data: {
-    //         name: formData.name
-    //       }
-    //     }
-    //   });
-    //   if (error) throw new Error(error.message);
-    // } catch (err) {
-    //   Alert.alert('Failed', err.message);
-    // } finally {
-    //   setLoading(false);
-    // }
+    try {
+      const { error } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+        options: {
+          data: {
+            name: formData.name
+          }
+        }
+      });
+      if (error) {
+        Alert.alert('Failed', error.message);
+        return;
+      }
+      router.replace('/');
+    } catch (err) {
+      Alert.alert('Failed', err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const inputConfig = [
