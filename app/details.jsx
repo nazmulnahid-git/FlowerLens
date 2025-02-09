@@ -14,7 +14,7 @@ import { useAuth } from '../contexts/AuthContext';
 const ClassDetails = () => {
   const router = useRoute();
   const { user } = useAuth();
-  const { class_id, predicion_percentage, flower_image, saved, saved_id } = router.params;
+  const { class_id, prediction_percentage, flower_image, saved, saved_id } = router.params;
   const [details, setDetails] = useState(null);
   const [is_saved, setIsSaved] = useState(saved || false);
   const [saved_flower_id, setSavedFlowerId] = useState(saved_id || null);
@@ -98,9 +98,9 @@ const ClassDetails = () => {
           <View style={styles.imageOverlay}>
             <Text style={styles.flowerName}>{details.flower_name}</Text>
             {
-              predicion_percentage &&
+              prediction_percentage &&
               <Text style={styles.accuracy}>
-                Accuracy: {predicion_percentage}%
+                Accuracy: {(prediction_percentage * 1).toFixed(2)}%
               </Text>
             }
 

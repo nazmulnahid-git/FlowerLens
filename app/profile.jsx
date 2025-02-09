@@ -84,7 +84,7 @@ const UserHeader = ({ user, router, handleLogout, savedFlowers }) => {
           pathname: `/details`,
           params: {
             class_id: item.details_id,
-            predicion_percentage: item.accuracy,
+            prediction_percentage: item.accuracy,
             flower_image: item.image,
             saved: true,
             saved_id: item.id,

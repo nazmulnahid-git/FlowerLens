@@ -116,7 +116,7 @@ const MenuModal = ({ visible, onClose }) => {
             pathname: `/details`,
             params: {
               class_id: item.details_id,
-              predicion_percentage: item.accuracy,
+              prediction_percentage: item.accuracy,
               flower_image: item.image,
             }
           });
