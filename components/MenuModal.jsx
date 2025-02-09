@@ -478,8 +478,8 @@ const styles = StyleSheet.create({
   },
 
   footerPlaceholder: {
-    fontSize: wp(5),
-    fontWeight: 'bold',
+    fontSize: wp(4),
+    fontWeight: theme.fonts.semibold,
     color: theme.colors.textPrimary,
   },
 });
