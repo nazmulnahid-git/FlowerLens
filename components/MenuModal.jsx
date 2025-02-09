@@ -6,23 +6,24 @@ import {
   Pressable,
   Animated,
   StyleSheet,
-  ScrollView,
   Easing,
   FlatList,
   Image,
+  Alert,
 } from 'react-native';
 import { hp, wp } from '../helpers/common';
 import { theme } from '../constants/theme';
-import { IconCancel, IconHeaderLogo } from '../assets/icons/Icons';
+import { IconCancel, IconHeaderLogo, IconDelete } from '../assets/icons/Icons';
 import Input from './SearchInput';
 import { useAuth } from '../contexts/AuthContext';
 import { useRouter } from 'expo-router';
-import { getHistory } from '../services/HistoryService';
+import { deleteHistory, getHistory } from '../services/HistoryService';
 
 const MenuModal = ({ visible, onClose }) => {
   const slideAnim = useRef(new Animated.Value(-wp(80))).current;
   const [isFocused, setIsFocused] = useState(false);
   const [history, setHistory] = useState([]);
+  const [selectedItem, setSelectedItem] = useState(null);
   const { user } = useAuth();
   const router = useRouter();
 
@@ -33,6 +34,32 @@ const MenuModal = ({ visible, onClose }) => {
     } catch (error) {
       console.error('Error fetching history:', error);
     }
+  };
+
+  const handleDeleteHistory = (itemId) => {
+    Alert.alert(
+      "Delete History",
+      "Are you sure you want to delete this item from your history?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel"
+        },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: async () => {
+            const res = await deleteHistory(itemId, user?.id);
+            if (!res.success) {
+              Alert.alert("Error", "Failed to delete history item");
+              return;
+            }
+            setHistory(prevHistory => prevHistory.filter(item => item.id !== itemId));
+            setSelectedItem(null);
+          }
+        }
+      ]
+    );
   };
 
   useEffect(() => {
@@ -53,32 +80,63 @@ const MenuModal = ({ visible, onClose }) => {
     onClose();
   };
 
-  const renderHistoryItem = ({ item }) => (
-    <Pressable onPress={() => {
-      handleClose();
-      router.push(
-        {
-          pathname: `/details`,
-          params: {
-            class_id: item.details_id,
-            predicion_percentage: item.accuracy,
-            flower_image: item.image,
-          }
-        }
-      );
-    }
-    }>
-      <View style={styles.historyItem}>
-        <Image source={{ uri: item.image }} style={styles.flowerImage} />
-        <Text style={styles.flowerName}>{item.details.flower_name}</Text>
-      </View>
-    </Pressable >
-  );
+  const renderHistoryItem = ({ item }) => {
+    const isSelected = selectedItem === item.id;
 
+    return (
+      <Pressable
+        onPress={() => {
+          handleClose();
+          router.push({
+            pathname: `/details`,
+            params: {
+              class_id: item.details_id,
+              predicion_percentage: item.accuracy,
+              flower_image: item.image,
+            }
+          });
+        }}
+        onLongPress={() => setSelectedItem(item.id)}
+        style={({ pressed }) => [
+          styles.historyItem,
+          isSelected && styles.historyItemSelected,
+          pressed && styles.historyItemPressed
+        ]}
+      >
+        <View style={styles.historyItemContent}>
+          <Image
+            source={{ uri: item.image }}
+            style={styles.flowerImage}
+          />
+          <View style={styles.flowerDetails}>
+            <Text style={styles.flowerName}>{item.details.flower_name}</Text>
+            <Text style={styles.accuracy}>Accuracy: {item.accuracy}%</Text>
+          </View>
+          {isSelected && (
+            <Pressable
+              onPress={() => handleDeleteHistory(item.id)}
+              style={styles.deleteButton}
+            >
+              <IconDelete width={wp(6)} height={wp(6)} color={theme.colors.danger} />
+            </Pressable>
+          )}
+        </View>
+      </Pressable>
+    );
+  };
+
+  // Rest of the component remains the same until the FlatList
   return (
     <Modal visible={visible} transparent animationType="none" onRequestClose={handleClose}>
       <View style={styles.modalOverlay}>
-        <Pressable style={styles.overlay} activeOpacity={1} onPress={handleClose} />
+        <Pressable
+          style={styles.overlay}
+          activeOpacity={1}
+          onPress={() => {
+            setSelectedItem(null);
+            handleClose();
+          }}
+        />
 
         <Animated.View
           style={[
@@ -129,19 +187,17 @@ const MenuModal = ({ visible, onClose }) => {
               </Pressable>
             </View>
           ) : (
-            // <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
             <FlatList
               data={history}
               keyExtractor={(item) => item.id}
               renderItem={renderHistoryItem}
               contentContainerStyle={styles.historyList}
+              ItemSeparatorComponent={() => <View style={styles.separator} />}
             />
-            // </ScrollView>
           )}
 
-
           <View style={styles.modalFooter}>
-            {user?.name ? <Text>{user?.name}</Text> : <Text> Flower Lens </Text>}
+            {user?.name ? <Text>{user?.name}</Text> : <Text>Flower Lens</Text>}
           </View>
         </Animated.View>
       </View>
@@ -150,6 +206,7 @@ const MenuModal = ({ visible, onClose }) => {
 };
 
 export default MenuModal;
+
 
 const styles = StyleSheet.create({
   modalOverlay: {
@@ -241,25 +298,53 @@ const styles = StyleSheet.create({
     opacity: 0.8,
   },
   historyList: {
-    padding: 10,
+    padding: wp(4),
   },
   historyItem: {
+    backgroundColor: '#fff',
+    borderRadius: theme.radius.md,
+    marginVertical: hp(0.5),
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  historyItemSelected: {
+    backgroundColor: theme.colors.primaryLight,
+  },
+  historyItemPressed: {
+    opacity: 0.8,
+  },
+  historyItemContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 10,
-    backgroundColor: '#f9f9f9',
-    borderRadius: 8,
-    marginBottom: 10,
+    padding: wp(3),
   },
   flowerImage: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    marginRight: 10,
+    width: wp(15),
+    height: wp(15),
+    borderRadius: wp(7.5),
+    marginRight: wp(3),
+  },
+  flowerDetails: {
+    flex: 1,
   },
   flowerName: {
     fontSize: wp(4),
+    fontWeight: '600',
     color: theme.colors.textPrimary,
+    marginBottom: hp(0.5),
+  },
+  accuracy: {
+    fontSize: wp(3.5),
+    color: theme.colors.textSecondary,
+  },
+  deleteButton: {
+    padding: wp(2),
+  },
+  separator: {
+    height: hp(1),
   },
   modalFooter: {
     bottom: 0,
