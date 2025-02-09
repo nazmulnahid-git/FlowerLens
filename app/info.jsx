@@ -68,7 +68,7 @@ const PersonCard = ({ image, name, designation, department, id, batch, universit
 const Info = () => {
   return (
     <ScreenWrapper>
-      <StatusBar style="dark" />
+      <StatusBar style='light' backgroundColor={theme.colors.primary} />
       <View style={{ paddingHorizontal: wp(4) }}>
         <Header title="About" mb={20} />
       </View>

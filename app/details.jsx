@@ -1,10 +1,9 @@
-import { Image, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { Image, ScrollView, StyleSheet, Text, View, StatusBar } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useRoute } from '@react-navigation/native';
 import { getFlowerData } from '../services/FlowerService';
 import Header from '../components/Header';
 import ScreenWrapper from '../components/ScreenWrapper';
-import { StatusBar } from 'expo-status-bar';
 import { hp, wp } from '../helpers/common';
 import RenderHTML from 'react-native-render-html';
 import { theme } from '../constants/theme';
@@ -93,9 +92,9 @@ const ClassDetails = () => {
 
   return (
     <ScreenWrapper>
-      <StatusBar style="dark" />
+      <StatusBar style='light' backgroundColor={theme.colors.primary} />
       <View style={{ paddingHorizontal: wp(4) }}>
-        <Header title='Details' mb={20} />
+        <Header title='Details' />
       </View>
       {renderContent()}
     </ScreenWrapper>

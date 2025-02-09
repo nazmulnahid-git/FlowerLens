@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
-import { Text, Pressable, View, StyleSheet, StatusBar, Alert } from 'react-native';
+import { Text, Pressable, View, StyleSheet, Alert } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
 import { useRouter } from 'expo-router';
 import ScreenWrapper from '../components/ScreenWrapper';
 import { hp, wp } from '@/helpers/common';
@@ -94,8 +95,8 @@ const SignupScreen = () => {
   ];
 
   return (
-    <ScreenWrapper bg="white">
-      <StatusBar style="dark" />
+    <ScreenWrapper>
+      <StatusBar style='light' backgroundColor={theme.colors.primary} />
       <View style={styles.container}>
         <BackButton size={30} color={colors.primary} />
         <View>

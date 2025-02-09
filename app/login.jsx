@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { Text, Pressable, View, StyleSheet, StatusBar, Alert } from 'react-native';
+import { Text, Pressable, View, StyleSheet, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 
 import { hp, wp } from '@/helpers/common';
@@ -10,6 +10,7 @@ import Button from '../components/Button';
 import Input from '../components/Input';
 import ScreenWrapper from '../components/ScreenWrapper';
 import { supabase } from '../lib/supabase';
+import { StatusBar } from 'expo-status-bar';
 
 const { colors } = theme;
 
@@ -79,8 +80,8 @@ const LoginScreen = () => {
   ];
 
   return (
-    <ScreenWrapper bg="white">
-      <StatusBar style="dark" />
+    <ScreenWrapper>
+      <StatusBar style='light' backgroundColor={theme.colors.primary} />
       <View style={styles.container}>
         <BackButton size={30} color={colors.primary} />
         <View>

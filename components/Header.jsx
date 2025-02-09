@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 5,
+    marginTop: 10,
     gap: 10,
   },
   title: {

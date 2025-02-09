@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StatusBar, StyleSheet, View, Text, Pressable, Alert } from 'react-native';
+import { StyleSheet, View, Text, Pressable, Alert } from 'react-native';
 import ScreenWrapper from '../components/ScreenWrapper';
 import { hp, wp } from '../helpers/common';
 import MenuButton from '../components/MenuButton';
@@ -13,6 +13,7 @@ import { cloudinary } from '../lib/cloudinary';
 import { apiBaseUrl } from '../constants';
 import { useAuth } from '../contexts/AuthContext';
 import { createHistory } from '../services/HistoryService';
+import { StatusBar } from 'expo-status-bar';
 
 
 const TabButton = ({ value, selectedValue, onPress, label }) => {
@@ -100,8 +101,8 @@ const SearchScreen = () => {
 
 
   return (
-    <ScreenWrapper style={{ paddingTop: 10 }}>
-      <StatusBar style="dark" />
+    <ScreenWrapper>
+      <StatusBar style='light' backgroundColor={theme.colors.primary} />
       <View style={styles.headerSection}>
         <MenuButton size={30} onPress={() => setIsModalVisible(true)} />
         <IconHeaderLogo />
