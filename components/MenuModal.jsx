@@ -23,6 +23,8 @@ const MenuModal = ({ visible, onClose }) => {
   const slideAnim = useRef(new Animated.Value(-wp(80))).current;
   const [isFocused, setIsFocused] = useState(false);
   const [history, setHistory] = useState([]);
+  const [filteredHistory, setFilteredHistory] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
   const [selectedItem, setSelectedItem] = useState(null);
   const { user } = useAuth();
   const router = useRouter();
@@ -30,10 +32,26 @@ const MenuModal = ({ visible, onClose }) => {
   const getHistoryData = async () => {
     try {
       const res = await getHistory(user?.id);
-      if (res.success) setHistory(res.data);
+      if (res.success) {
+        setHistory(res.data);
+        setFilteredHistory(res.data);
+      }
     } catch (error) {
       console.error('Error fetching history:', error);
     }
+  };
+
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    if (!query.trim()) {
+      setFilteredHistory(history);
+      return;
+    }
+
+    const filtered = history.filter(item =>
+      item.details.flower_name.toLowerCase().includes(query.toLowerCase())
+    );
+    setFilteredHistory(filtered);
   };
 
   const handleDeleteHistory = (itemId) => {
@@ -54,7 +72,11 @@ const MenuModal = ({ visible, onClose }) => {
               Alert.alert("Error", "Failed to delete history item");
               return;
             }
-            setHistory(prevHistory => prevHistory.filter(item => item.id !== itemId));
+            const updatedHistory = history.filter(item => item.id !== itemId);
+            setHistory(updatedHistory);
+            setFilteredHistory(updatedHistory.filter(item =>
+              item.details.flower_name.toLowerCase().includes(searchQuery.toLowerCase())
+            ));
             setSelectedItem(null);
           }
         }
@@ -77,6 +99,8 @@ const MenuModal = ({ visible, onClose }) => {
 
   const handleClose = () => {
     setIsFocused(false);
+    setSearchQuery('');
+    setFilteredHistory(history);
     onClose();
   };
 
@@ -125,7 +149,14 @@ const MenuModal = ({ visible, onClose }) => {
     );
   };
 
-  // Rest of the component remains the same until the FlatList
+  const renderEmptyList = () => (
+    <View style={styles.emptyContainer}>
+      <Text style={styles.emptyText}>
+        {searchQuery ? 'No flowers found matching your search' : 'No history items yet'}
+      </Text>
+    </View>
+  );
+
   return (
     <Modal visible={visible} transparent animationType="none" onRequestClose={handleClose}>
       <View style={styles.modalOverlay}>
@@ -157,7 +188,14 @@ const MenuModal = ({ visible, onClose }) => {
               </View>
             )}
             {user ? (
-              <Input isFocused={isFocused} setIsFocused={setIsFocused} style={{ backgroundColor: 'white' }} />
+              <Input
+                isFocused={isFocused}
+                setIsFocused={setIsFocused}
+                value={searchQuery}
+                onChangeText={handleSearch}
+                placeholder="Search flowers..."
+                style={{ backgroundColor: 'white' }}
+              />
             ) : (
               <Text style={styles.subText}>You are not logged in.</Text>
             )}
@@ -187,17 +225,34 @@ const MenuModal = ({ visible, onClose }) => {
               </Pressable>
             </View>
           ) : (
-            <FlatList
-              data={history}
-              keyExtractor={(item) => item.id}
-              renderItem={renderHistoryItem}
-              contentContainerStyle={styles.historyList}
-              ItemSeparatorComponent={() => <View style={styles.separator} />}
-            />
+            <View>
+              {filteredHistory.length !== history.length && filteredHistory.length > 0 && (
+                <Text style={styles.searchResults}>
+                  Showing {filteredHistory.length} of {history.length}
+                </Text>
+              )}
+              <FlatList
+                data={filteredHistory}
+                keyExtractor={(item) => item.id}
+                renderItem={renderHistoryItem}
+                contentContainerStyle={[
+                  styles.historyList,
+                  !filteredHistory.length && styles.emptyList
+                ]}
+                ItemSeparatorComponent={() => <View style={styles.separator} />}
+                ListEmptyComponent={renderEmptyList}
+              />
+            </View>
           )}
 
           <View style={styles.modalFooter}>
-            {user?.name ? <Text>{user?.name}</Text> : <Text>Flower Lens</Text>}
+            {user?.name ? (
+              <View style={styles.footerContent}>
+                <Text>{user?.name}</Text>
+              </View>
+            ) : (
+              <Text>Flower Lens</Text>
+            )}
           </View>
         </Animated.View>
       </View>
@@ -345,6 +400,30 @@ const styles = StyleSheet.create({
   },
   separator: {
     height: hp(1),
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: wp(4),
+  },
+  emptyText: {
+    fontSize: wp(4),
+    color: theme.colors.textSecondary,
+    textAlign: 'center',
+  },
+  emptyList: {
+    flexGrow: 1,
+  },
+  footerContent: {
+    alignItems: 'center',
+  },
+  searchResults: {
+    fontSize: wp(4),
+    color: theme.colors.gray,
+    marginTop: hp(0.5),
+    paddingHorizontal: wp(5),
+    textAlign: 'right',
   },
   modalFooter: {
     bottom: 0,
