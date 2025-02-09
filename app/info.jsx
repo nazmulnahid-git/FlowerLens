@@ -11,7 +11,8 @@ const supervisor = {
   name: 'Shahriar Arefin Zummon',
   designation: 'Lecturer',
   department: 'Department of CSE',
-  image: require('../assets/images/nahid.jpg'),
+  university: 'Leading University, Sylhet',
+  image: require('../assets/images/zummon.jpg'),
 };
 
 const developers = [
@@ -19,18 +20,21 @@ const developers = [
     name: 'Md. Nazmul Islam Nahid',
     id: '0182210012101186',
     batch: 'CSE 59 Batch',
+    university: 'Leading University, Sylhet',
     image: require('../assets/images/nahid.jpg')
   },
   {
     name: 'Puspita Dhar',
     id: '0182210012101204',
     batch: 'CSE 59 Batch',
+    university: 'Leading University, Sylhet',
     image: require('../assets/images/pushpita.jpg'),
   },
   {
     name: 'Safwat Nusrat',
     id: '0182210012101213',
     batch: 'CSE 59 Batch',
+    university: 'Leading University, Sylhet',
     image: require('../assets/images/safwat.jpg'),
   }
 ];
@@ -47,7 +51,7 @@ const FlowerInfoCard = () => (
   </View>
 );
 
-const PersonCard = ({ image, name, designation, department, id, batch }) => (
+const PersonCard = ({ image, name, designation, department, id, batch, university }) => (
   <View style={styles.card}>
     <Image source={image} style={styles.profileImage} />
     <View style={styles.cardContent}>
@@ -56,6 +60,7 @@ const PersonCard = ({ image, name, designation, department, id, batch }) => (
       {department && <Text style={styles.text}>{department}</Text>}
       {id && <Text style={styles.text}>ID: {id}</Text>}
       {batch && <Text style={styles.text}>{batch}</Text>}
+      {university && <Text style={styles.text}>{university}</Text>}
     </View>
   </View>
 );
@@ -96,10 +101,10 @@ const styles = StyleSheet.create({
     padding: wp(5),
     marginBottom: hp(3),
     elevation: 5,
-    shadowColor: '#000',
+    shadowColor: theme.colors.primaryDark,
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
+    shadowOpacity: 0.5,
+    shadowRadius: 6,
     alignItems: 'center',
   },
   flowerTitle: {
@@ -137,10 +142,10 @@ const styles = StyleSheet.create({
     padding: wp(4),
     marginBottom: hp(2),
     elevation: 3,
-    shadowColor: '#000',
+    shadowColor: theme.colors.primaryDark,
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    shadowOpacity: 0.7,
+    shadowRadius: 8,
     alignItems: 'center',
   },
   profileImage: {
