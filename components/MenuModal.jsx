@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import { hp, wp } from '../helpers/common';
 import { theme } from '../constants/theme';
-import { IconCancel } from '../assets/icons/Icons';
+import { IconCancel, IconHeaderLogo } from '../assets/icons/Icons';
 import Input from './SearchInput';
 import { useAuth } from '../contexts/AuthContext';
 import { useRouter } from 'expo-router';
@@ -107,6 +107,7 @@ const MenuModal = ({ visible, onClose }) => {
 
           {!user ? (
             <View style={styles.authContainer}>
+              <IconHeaderLogo />
               <Text style={styles.subText}>Please log in or sign up to save and access your search history.</Text>
               <Pressable
                 style={({ pressed }) => [styles.button, styles.loginBtn, pressed && styles.pressed]}
@@ -140,7 +141,7 @@ const MenuModal = ({ visible, onClose }) => {
 
 
           <View style={styles.modalFooter}>
-            <Text>{user?.name}</Text>
+            {user?.name ? <Text>{user?.name}</Text> : <Text> Flower Lens </Text>}
           </View>
         </Animated.View>
       </View>
@@ -195,7 +196,10 @@ const styles = StyleSheet.create({
   authContainer: {
     padding: wp(5),
     borderRadius: wp(4),
-    margin: wp(3),
+    marginTop: 'auto',
+    marginBottom: hp(40),
+    marginLeft: '5%',
+    marginRight: '5%',
     alignItems: 'center',
     backgroundColor: theme.colors.primaryLight,
     borderRadius: theme.radius.md,
@@ -258,8 +262,16 @@ const styles = StyleSheet.create({
     color: theme.colors.textPrimary,
   },
   modalFooter: {
+    bottom: 0,
+    left: 0,
+    right: 0,
+    position: 'absolute',
     padding: 10,
+    height: hp(8),
     backgroundColor: theme.colors.primaryLight,
     alignItems: 'center',
+    justifyContent: 'center',
+    borderTopLeftRadius: theme.radius.lg,
+    borderTopRightRadius: theme.radius.lg,
   },
 });
