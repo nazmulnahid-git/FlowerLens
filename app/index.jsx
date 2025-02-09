@@ -79,6 +79,7 @@ const SearchScreen = () => {
           user_id: user.id,
           details_id: flower_class + 1,
           image: imgURL,
+          accuracy: probability.toFixed(2),
         });
       }
       router.push(
