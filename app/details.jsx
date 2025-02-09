@@ -1,18 +1,23 @@
-import { Image, ScrollView, StyleSheet, Text, View, StatusBar } from 'react-native'
+import { Image, ScrollView, StyleSheet, Text, View, StatusBar, Pressable } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useRoute } from '@react-navigation/native';
-import { getFlowerData } from '../services/FlowerService';
+import { getFlowerData, saveOrUnSaveFlower } from '../services/FlowerService';
 import Header from '../components/Header';
 import ScreenWrapper from '../components/ScreenWrapper';
 import { hp, wp } from '../helpers/common';
 import RenderHTML from 'react-native-render-html';
 import { theme } from '../constants/theme';
 import Loading from '../components/Loading';
+import { IconBookmark } from '../assets/icons/Icons';
+import { useAuth } from '../contexts/AuthContext';
 
 const ClassDetails = () => {
   const router = useRoute();
-  const { class_id, predicion_percentage, flower_image } = router.params;
+  const { user } = useAuth();
+  const { class_id, predicion_percentage, flower_image, saved, saved_id } = router.params;
   const [details, setDetails] = useState(null);
+  const [is_saved, setIsSaved] = useState(saved || false);
+  const [saved_flower_id, setSavedFlowerId] = useState(saved_id || null);
   const [loading, setLoading] = useState(true);
 
   const getDetails = async () => {
@@ -25,7 +30,20 @@ const ClassDetails = () => {
     } finally {
       setLoading(false);
     }
-  }
+  };
+
+  const handleSavedFlower = async (data) => {
+    const res = await saveOrUnSaveFlower(data);
+    console.log('res', res);
+    if (res.success) {
+      setIsSaved(!is_saved);
+      console.log('res.data', res.data);
+      setSavedFlowerId(res.data.id);
+      Alert.alert('Saved Flower', 'Flower saved successfully');
+    } else {
+      Alert.alert('Error', res.msg);
+    }
+  };
 
   useEffect(() => {
     getDetails();
@@ -68,13 +86,27 @@ const ClassDetails = () => {
             style={styles.flowerImage}
             resizeMode="cover"
           />
+          <Pressable onPress={() => handleSavedFlower({
+            user_id: user?.id,
+            details_id: class_id,
+            image: flower_image,
+            ...(is_saved && { id: saved_flower_id })
+          })} style={styles.bookmarkButton}>
+            <IconBookmark color={theme.colors.primary} fill={is_saved ? theme.colors.primary : 'none'} />
+          </Pressable>
+
           <View style={styles.imageOverlay}>
             <Text style={styles.flowerName}>{details.flower_name}</Text>
-            <Text style={styles.accuracy}>
-              Accuracy: {predicion_percentage}%
-            </Text>
+            {
+              predicion_percentage &&
+              <Text style={styles.accuracy}>
+                Accuracy: {predicion_percentage}%
+              </Text>
+            }
+
           </View>
         </View>
+
 
         <ScrollView
           style={styles.descriptionScroll}
@@ -86,7 +118,7 @@ const ClassDetails = () => {
             tagsStyles={tagsStyles}
           />
         </ScrollView>
-      </View>
+      </View >
     );
   };
 
@@ -141,6 +173,19 @@ const styles = StyleSheet.create({
     fontSize: hp(3),
     fontWeight: theme.fonts.semibold,
     color: theme.colors.primary,
+  },
+  bookmarkButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    padding: 8,
+    borderRadius: 20,
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
   },
   accuracy: {
     fontSize: hp(2.2),

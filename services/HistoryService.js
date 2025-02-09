@@ -14,7 +14,6 @@ export const getHistory = async (user_id) => {
 }
 
 export const createHistory = async (historyData) => {
-  console.log('historyData', historyData);
   try {
     const {data, error} = await supabase.from('history').upsert(historyData).select().single();
     if (error) {

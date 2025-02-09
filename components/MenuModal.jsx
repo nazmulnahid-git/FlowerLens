@@ -18,6 +18,7 @@ import Input from './SearchInput';
 import { useAuth } from '../contexts/AuthContext';
 import { useRouter } from 'expo-router';
 import { deleteHistory, getHistory } from '../services/HistoryService';
+import { getUserImageSource } from '../services/UserService';
 
 const MenuModal = ({ visible, onClose }) => {
   const slideAnim = useRef(new Animated.Value(-wp(80))).current;
@@ -245,15 +246,27 @@ const MenuModal = ({ visible, onClose }) => {
             </View>
           )}
 
-          <View style={styles.modalFooter}>
+          <Pressable
+            style={styles.modalFooter}
+            onPress={() => {
+              if (!user) return;
+              onClose();
+              router.push('/profile');
+            }}
+          >
             {user?.name ? (
               <View style={styles.footerContent}>
-                <Text>{user?.name}</Text>
+                <Image
+                  source={getUserImageSource(user?.image)}
+                  style={styles.footerImage}
+                />
+                <Text style={styles.footerText}>{user?.name}</Text>
               </View>
             ) : (
-              <Text>Flower Lens</Text>
+              <Text style={styles.footerPlaceholder}>Flower Lens</Text>
             )}
-          </View>
+          </Pressable>
+
         </Animated.View>
       </View>
     </Modal>
@@ -426,16 +439,47 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
   modalFooter: {
+    position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
-    position: 'absolute',
-    padding: 10,
-    height: hp(8),
+    padding: hp(2),
     backgroundColor: theme.colors.primaryLight,
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     borderTopLeftRadius: theme.radius.lg,
     borderTopRightRadius: theme.radius.lg,
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: -2 },
+    shadowRadius: 5,
+  },
+
+  footerContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: wp(3),
+  },
+
+  footerImage: {
+    width: wp(10),
+    height: wp(10),
+    borderRadius: wp(5),
+    borderWidth: 1,
+    borderColor: theme.colors.primary,
+  },
+
+  footerText: {
+    fontSize: wp(4),
+    fontWeight: '600',
+    color: theme.colors.textPrimary,
+  },
+
+  footerPlaceholder: {
+    fontSize: wp(5),
+    fontWeight: 'bold',
+    color: theme.colors.textPrimary,
   },
 });

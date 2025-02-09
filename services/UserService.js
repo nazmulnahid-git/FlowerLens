@@ -23,3 +23,10 @@ export const updateUserData = async (user_id, data) => {
     return {success: false, msg: error.message};
   }
 };
+
+export const getUserImageSource = (image) => {
+  if (image) {
+    return { uri: image }
+  }
+  return require('../assets/images/default.png');
+}
