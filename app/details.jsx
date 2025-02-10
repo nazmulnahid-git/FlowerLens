@@ -86,14 +86,14 @@ const ClassDetails = () => {
             style={styles.flowerImage}
             resizeMode="cover"
           />
-          <Pressable onPress={() => handleSavedFlower({
+          {user && <Pressable onPress={() => handleSavedFlower({
             user_id: user?.id,
             details_id: class_id,
             image: flower_image,
             ...(is_saved && { id: saved_flower_id })
           })} style={styles.bookmarkButton}>
             <IconBookmark color={theme.colors.primary} fill={is_saved ? theme.colors.primary : 'none'} />
-          </Pressable>
+          </Pressable>}
 
           <View style={styles.imageOverlay}>
             <Text style={styles.flowerName}>{details.flower_name}</Text>

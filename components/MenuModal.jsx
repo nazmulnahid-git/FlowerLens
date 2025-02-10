@@ -96,7 +96,7 @@ const MenuModal = ({ visible, onClose }) => {
 
   useEffect(() => {
     if (user) getHistoryData();
-  }, [user]);
+  }, [user, visible]);
 
   const handleClose = () => {
     setIsFocused(false);

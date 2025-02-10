@@ -18,7 +18,7 @@ const screenWidth = Dimensions.get('window').width;
 const itemWidth = (screenWidth - wp(8) - wp(4) * (numColumns - 1)) / numColumns;
 
 const ProfileScreen = () => {
-  const { user } = useAuth();
+  const { user, setUserData, setAuth } = useAuth();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [savedFlowers, setSavedFlowers] = useState([]);
@@ -54,8 +54,10 @@ const ProfileScreen = () => {
           if (error) {
             Alert.alert('Error', error.message);
           } else {
-            router.replace('/');
+            setUserData(null);
+            setAuth(null);
             setLoading(false);
+            router.replace('/');
           }
         }
       }
